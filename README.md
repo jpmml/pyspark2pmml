@@ -22,6 +22,33 @@ mvn clean package
 
 The build produces an uber-JAR file `target/jpmml-sparkml-package-1.0-SNAPSHOT.jar`.
 
+# Scala usage #
+
+Launching the Spark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
+```
+spark-shell --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar 
+```
+
+Fitting an example pipeline model:
+```scala
+import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.feature.RFormula
+import org.apache.spark.ml.regression.DecisionTreeRegressor
+
+val data = spark.read.option("header", "true").option("inferSchema", "true").csv("wine.csv")
+
+val formula = new RFormula().setFormula("quality ~ .")
+val regressor = new DecisionTreeRegressor()
+val pipeline = new Pipeline().setStages(Array(formula, regressor))
+val pipelineModel = pipeline.fit(data)
+```
+
+Exporting the fitted example pipeline model to PMML byte array:
+```scala
+val pmmlBytes = org.jpmml.sparkml.ConverterUtil.toPMMLByteArray(data.schema, pipelineModel)
+println(new String(pmmlBytes, "UTF-8"))
+```
+
 # PySpark usage #
 
 Launching the PySpark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file, and `--py-files` to specify the location of the Python utility functions script:
@@ -31,11 +58,11 @@ pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-S
 
 Fitting an example pipeline model:
 ```python
-data = spark.read.csv("wine.csv", header = True, inferSchema = True)
-
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import RFormula
 from pyspark.ml.regression import DecisionTreeRegressor
+
+data = spark.read.csv("wine.csv", header = True, inferSchema = True)
 
 formula = RFormula(formula = "quality ~ .")
 regressor = DecisionTreeRegressor()
