@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.jpmml</groupId>
+	<artifactId>jpmml-sparkml-package</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License (AGPL) version 3.0</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jpmml</groupId>
+			<artifactId>jpmml-sparkml</artifactId>
+			<version>1.1.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.beust</groupId>
+					<artifactId>jcommander</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+							<!--
+							<finalName>jpmml-sparkml-package-${project.version}</finalName>
+							-->
+							<relocations>
+								<relocation>
+									<pattern>org.dmg.pmml</pattern>
+									<shadedPattern>org.shaded.dmg.pmml</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.jpmml.agent</pattern>
+									<shadedPattern>org.shaded.jpmml.agent</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.jpmml.model</pattern>
+									<shadedPattern>org.shaded.jpmml.model</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.jpmml.schema</pattern>
+									<shadedPattern>org.shaded.jpmml.schema</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+
