@@ -5,14 +5,19 @@ JPMML-SparkML as an [Apache Spark Package] (https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark] (http://spark.apache.org/) 2.0.X.
+* [Apache Spark] (http://spark.apache.org/) 1.5.X or 1.6.X.
 
 # Installation #
 
-Check out the JPMML-SparkML-Package project and enter its directory:
+Clone the JPMML-SparkML-Package project and enter its directory:
 ```
 git clone https://github.com/jpmml/jpmml-sparkml-package.git
 cd jpmml-sparkml-package
+```
+
+Check out the `spark-1.6.X` development branch:
+```
+git checkout spark-1.6.X
 ```
 
 Build the project:
@@ -35,7 +40,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.RFormula
 import org.apache.spark.ml.regression.DecisionTreeRegressor
 
-val data = spark.read.option("header", "true").option("inferSchema", "true").csv("wine.csv")
+val data = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferSchema", "true").load("wine.csv")
 
 val formula = new RFormula().setFormula("quality ~ .")
 val regressor = new DecisionTreeRegressor()
@@ -51,9 +56,9 @@ println(new String(pmmlBytes, "UTF-8"))
 
 # PySpark usage #
 
-Launching the PySpark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file, and `--py-files` to specify the location of the Python utility functions script:
+Launching the PySpark shell with JPMML-SparkML-Package; use `--jars` and `--driver-class-path` to specify the location of the uber-JAR file, and `--py-files` to specify the location of the Python utility functions script:
 ```
-pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar --py-files /path/to/jpmml-sparkml-package/src/main/python/jpmml.py
+pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar --driver-class-path /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar --py-files /path/to/jpmml-sparkml-package/src/main/python/jpmml.py
 ```
 
 Fitting an example pipeline model:
@@ -62,7 +67,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import RFormula
 from pyspark.ml.regression import DecisionTreeRegressor
 
-data = spark.read.csv("wine.csv", header = True, inferSchema = True)
+data = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferschema", "true").load("wine.csv")
 
 formula = RFormula(formula = "quality ~ .")
 regressor = DecisionTreeRegressor()
