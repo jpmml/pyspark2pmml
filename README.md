@@ -49,26 +49,26 @@ The build produces an EGG file `target/jpmml_sparkml-1.0rc0.egg` and an uber-JAR
 
 Launch the Spark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
 ```
-spark-shell --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar 
+spark-shell --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar
 ```
 
 Fitting an example pipeline model:
 ```scala
 import org.apache.spark.ml.Pipeline
+import org.apache.spark.ml.classification.DecisionTreeClassifier
 import org.apache.spark.ml.feature.RFormula
-import org.apache.spark.ml.regression.DecisionTreeRegressor
 
-val data = spark.read.option("header", "true").option("inferSchema", "true").csv("wine.csv")
+val df = spark.read.option("header", "true").option("inferSchema", "true").csv("iris.csv")
 
-val formula = new RFormula().setFormula("quality ~ .")
-val regressor = new DecisionTreeRegressor()
-val pipeline = new Pipeline().setStages(Array(formula, regressor))
-val pipelineModel = pipeline.fit(data)
+val formula = new RFormula().setFormula("Species ~ .")
+val classifier = new DecisionTreeClassifier()
+val pipeline = new Pipeline().setStages(Array(formula, classifier))
+val pipelineModel = pipeline.fit(df)
 ```
 
 Exporting the fitted example pipeline model to PMML byte array:
 ```scala
-val pmmlBytes = org.jpmml.sparkml.ConverterUtil.toPMMLByteArray(data.schema, pipelineModel)
+val pmmlBytes = org.jpmml.sparkml.ConverterUtil.toPMMLByteArray(df.schema, pipelineModel)
 println(new String(pmmlBytes, "UTF-8"))
 ```
 
@@ -87,22 +87,22 @@ pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-S
 Fitting an example pipeline model:
 ```python
 from pyspark.ml import Pipeline
+from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
-from pyspark.ml.regression import DecisionTreeRegressor
 
-data = spark.read.csv("wine.csv", header = True, inferSchema = True)
+df = spark.read.csv("iris.csv", header = True, inferSchema = True)
 
-formula = RFormula(formula = "quality ~ .")
-regressor = DecisionTreeRegressor()
-pipeline = Pipeline(stages = [formula, regressor])
-pipelineModel = pipeline.fit(data)
+formula = RFormula(formula = "Species ~ .")
+classifier = DecisionTreeClassifier()
+pipeline = Pipeline(stages = [formula, classifier])
+pipelineModel = pipeline.fit(df)
 ```
 
 Exporting the fitted example pipeline model to PMML byte array:
 ```python
 from jpmml_sparkml import toPMMLBytes
 
-pmmlBytes = toPMMLBytes(sc, data, pipelineModel)
+pmmlBytes = toPMMLBytes(sc, df, pipelineModel)
 print(pmmlBytes)
 ```
 
