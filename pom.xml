@@ -98,5 +98,69 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>pyspark</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/python</directory>
+						<filtering>true</filtering>
+						<targetPath>${project.build.directory}/egg-sources/</targetPath>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.12</version>
+						<executions>
+							<execution>
+								<phase>generate-resources</phase>
+								<goals>
+									<goal>regex-property</goal>
+								</goals>
+								<configuration>
+									<failIfNoMatch>false</failIfNoMatch>
+									<name>project.python_version</name>
+									<regex>-SNAPSHOT</regex>
+									<replacement>\.preview</replacement>
+									<value>${project.version}</value>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.5.0</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>python</executable>
+									<arguments>
+										<argument>setup.py</argument>
+										<argument>bdist_egg</argument>
+										<argument>--dist-dir</argument>
+										<argument>${project.build.directory}</argument>
+									</arguments>
+									<workingDirectory>${project.build.directory}/egg-sources/</workingDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
 
