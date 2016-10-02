@@ -20,6 +20,8 @@ When targeting Apache Spark 1.5.X or 1.6.X, check out the `spark-1.6.X` developm
 git checkout spark-1.6.X
 ```
 
+### Scala ###
+
 Build the project:
 ```
 mvn clean package
@@ -27,9 +29,25 @@ mvn clean package
 
 The build produces an uber-JAR file `target/jpmml-sparkml-package-1.0-SNAPSHOT.jar`.
 
-# Scala usage #
+### PySpark ###
 
-Launching the Spark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
+Add the Python bindings of Apache Spark to the `PYTHONPATH` environment variable:
+```
+export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python
+```
+
+Build the project using the `pyspark` profile:
+```
+mvn -Ppyspark clean package
+```
+
+The build produces an EGG file `target/jpmml_sparkml-1.0rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.0-SNAPSHOT.jar`.
+
+# Usage #
+
+### Scala ###
+
+Launch the Spark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
 ```
 spark-shell --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar 
 ```
@@ -54,11 +72,16 @@ val pmmlBytes = org.jpmml.sparkml.ConverterUtil.toPMMLByteArray(data.schema, pip
 println(new String(pmmlBytes, "UTF-8"))
 ```
 
-# PySpark usage #
+### PySpark ###
 
-Launching the PySpark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file, and `--py-files` to specify the location of the Python utility functions script:
+Add the EGG file to the `PYTHONPATH` environment variable:
 ```
-pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar --py-files /path/to/jpmml-sparkml-package/src/main/python/jpmml.py
+export PYTHONPATH=$PYTHONPATH:/path/to/jpmml-sparkml-package/target/jpmml_sparkml-1.0rc0.egg
+```
+
+Launch the PySpark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
+```
+pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.0-SNAPSHOT.jar
 ```
 
 Fitting an example pipeline model:
@@ -77,7 +100,7 @@ pipelineModel = pipeline.fit(data)
 
 Exporting the fitted example pipeline model to PMML byte array:
 ```python
-from jpmml import toPMMLBytes
+from jpmml_sparkml import toPMMLBytes
 
 pmmlBytes = toPMMLBytes(sc, data, pipelineModel)
 print(pmmlBytes)
