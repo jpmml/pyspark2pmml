@@ -58,6 +58,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.DecisionTreeClassifier
 import org.apache.spark.ml.feature.RFormula
 
+// Requires "--packages com.databricks:spark-csv_2.10:1.5.0"
 val df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferSchema", "true").load("iris.csv")
 
 val formula = new RFormula().setFormula("Species ~ .")
@@ -90,6 +91,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 
+# Requires "--packages com.databricks:spark-csv_2.10:1.5.0"
 df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferschema", "true").load("iris.csv")
 
 formula = RFormula(formula = "Species ~ .")
