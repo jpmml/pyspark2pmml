@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>jpmml-sparkml</artifactId>
-			<version>1.0.7</version>
+			<version>1.0.8</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.beust</groupId>
@@ -52,9 +52,6 @@
 									</excludes>
 								</filter>
 							</filters>
-							<!--
-							<finalName>jpmml-sparkml-package-${project.version}</finalName>
-							-->
 							<relocations>
 								<relocation>
 									<pattern>org.dmg.pmml</pattern>
