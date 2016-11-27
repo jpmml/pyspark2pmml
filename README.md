@@ -5,7 +5,7 @@ JPMML-SparkML as an [Apache Spark Package] (https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark] (http://spark.apache.org/) 1.5.X or 1.6.X.
+* [Apache Spark] (http://spark.apache.org/) 1.6.X.
 
 # Installation #
 
