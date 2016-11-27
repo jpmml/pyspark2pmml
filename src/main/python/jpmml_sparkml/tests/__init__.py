@@ -9,7 +9,7 @@ import os
 projectDir = os.path.join(os.path.dirname(__file__), "../../../../..")
 
 irisCsvFile = os.path.join(projectDir, "src/test/resources/Iris.csv")
-jpmmlPackageJarFile = os.path.join(projectDir, "target/jpmml-sparkml-package-1.0-SNAPSHOT.jar")
+jpmmlPackageJarFile = os.path.join(projectDir, "target/jpmml-sparkml-package-1.1-SNAPSHOT.jar")
 
 os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + jpmmlPackageJarFile + " pyspark-shell")
 
