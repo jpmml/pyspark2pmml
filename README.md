@@ -43,6 +43,12 @@ mvn -Ppyspark clean package
 
 The build produces an EGG file `target/jpmml_sparkml-1.0rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.0-SNAPSHOT.jar`.
 
+Test the uber-JAR file:
+```
+cd src/main/python
+nosetests
+```
+
 # Usage #
 
 ### Scala ###
@@ -59,7 +65,7 @@ import org.apache.spark.ml.classification.DecisionTreeClassifier
 import org.apache.spark.ml.feature.RFormula
 
 // Requires "--packages com.databricks:spark-csv_2.10:1.5.0"
-val df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferSchema", "true").load("iris.csv")
+val df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferSchema", "true").load("Iris.csv")
 
 val formula = new RFormula().setFormula("Species ~ .")
 val classifier = new DecisionTreeClassifier()
@@ -92,7 +98,7 @@ from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 
 # Requires "--packages com.databricks:spark-csv_2.10:1.5.0"
-df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferschema", "true").load("iris.csv")
+df = sqlContext.read.format("com.databricks.spark.csv").option("header", "true").option("inferschema", "true").load("Iris.csv")
 
 formula = RFormula(formula = "Species ~ .")
 classifier = DecisionTreeClassifier()
@@ -105,7 +111,7 @@ Exporting the fitted example pipeline model to PMML byte array:
 from jpmml_sparkml import toPMMLBytes
 
 pmmlBytes = toPMMLBytes(sc, df, pipelineModel)
-print(pmmlBytes)
+print(pmmlBytes.decode("UTF-8"))
 ```
 
 # License #
