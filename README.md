@@ -43,6 +43,12 @@ mvn -Ppyspark clean package
 
 The build produces an EGG file `target/jpmml_sparkml-1.0rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.0-SNAPSHOT.jar`.
 
+Test the uber-JAR file:
+```
+cd src/main/python
+nosetests
+```
+
 # Usage #
 
 ### Scala ###
@@ -58,7 +64,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.classification.DecisionTreeClassifier
 import org.apache.spark.ml.feature.RFormula
 
-val df = spark.read.option("header", "true").option("inferSchema", "true").csv("iris.csv")
+val df = spark.read.option("header", "true").option("inferSchema", "true").csv("Iris.csv")
 
 val formula = new RFormula().setFormula("Species ~ .")
 val classifier = new DecisionTreeClassifier()
@@ -90,7 +96,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 
-df = spark.read.csv("iris.csv", header = True, inferSchema = True)
+df = spark.read.csv("Iris.csv", header = True, inferSchema = True)
 
 formula = RFormula(formula = "Species ~ .")
 classifier = DecisionTreeClassifier()
@@ -103,7 +109,7 @@ Exporting the fitted example pipeline model to PMML byte array:
 from jpmml_sparkml import toPMMLBytes
 
 pmmlBytes = toPMMLBytes(sc, df, pipelineModel)
-print(pmmlBytes)
+print(pmmlBytes.decode("UTF-8"))
 ```
 
 # License #
