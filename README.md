@@ -5,7 +5,7 @@ JPMML-SparkML as an [Apache Spark Package] (https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark] (http://spark.apache.org/) 1.5.X, 1.6.X or 2.0.X.
+* [Apache Spark] (http://spark.apache.org/) 1.6.X or 2.0.X.
 
 # Installation #
 
@@ -15,7 +15,7 @@ git clone https://github.com/jpmml/jpmml-sparkml-package.git
 cd jpmml-sparkml-package
 ```
 
-When targeting Apache Spark 1.5.X or 1.6.X, check out the `spark-1.6.X` development branch:
+When targeting Apache Spark 1.6.X, check out the `spark-1.6.X` development branch:
 ```
 git checkout spark-1.6.X
 ```
