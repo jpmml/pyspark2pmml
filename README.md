@@ -1,11 +1,11 @@
 JPMML-SparkML-Package
 =====================
 
-JPMML-SparkML as an [Apache Spark Package] (https://spark-packages.org/).
+JPMML-SparkML as an [Apache Spark Package](https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark] (http://spark.apache.org/) 1.6.X.
+* [Apache Spark](http://spark.apache.org/) 1.6.X.
 
 # Installation #
 
@@ -116,8 +116,8 @@ print(pmmlBytes.decode("UTF-8"))
 
 # License #
 
-JPMML-SparkML-Package is licensed under the [GNU Affero General Public License (AGPL) version 3.0] (http://www.gnu.org/licenses/agpl-3.0.html). Other licenses are available on request.
+JPMML-SparkML-Package is licensed under the [GNU Affero General Public License (AGPL) version 3.0](http://www.gnu.org/licenses/agpl-3.0.html). Other licenses are available on request.
 
 # Additional information #
 
-Please contact [info@openscoring.io] (mailto:info@openscoring.io)
+Please contact [info@openscoring.io](mailto:info@openscoring.io)
