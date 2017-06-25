@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>jpmml-sparkml</artifactId>
-			<version>1.1.10</version>
+			<version>1.1.11</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.beust</groupId>
@@ -53,6 +53,10 @@
 								</filter>
 							</filters>
 							<relocations>
+								<relocation>
+									<pattern>com.google.common</pattern>
+									<shadedPattern>com.shaded.google.common</shadedPattern>
+								</relocation>
 								<relocation>
 									<pattern>org.dmg.pmml</pattern>
 									<shadedPattern>org.shaded.dmg.pmml</shadedPattern>
