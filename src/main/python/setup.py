@@ -1,6 +1,6 @@
 from setuptools import setup
 
-from jpmml_sparkml import __license__, __version__
+exec(open('jpmml_sparkml/metadata.py').read())
 
 setup(
 	name = "jpmml_sparkml",
