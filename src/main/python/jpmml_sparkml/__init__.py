@@ -3,9 +3,7 @@
 from py4j.java_gateway import JavaClass
 from pyspark.ml.common import _py2java
 
-__copyright__ = "Copyright (c) 2016 Villu Ruusmann"
-__license__ = "GNU Affero General Public License (AGPL) version 3.0"
-__version__ = "${project.python_version}"
+from .metadata import __copyright__, __license__, __version__
 
 def toPMMLBytes(sc, df, pipelineModel):
 	javaDF = _py2java(sc, df)
