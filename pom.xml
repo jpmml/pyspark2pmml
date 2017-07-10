@@ -6,6 +6,10 @@
 	<artifactId>jpmml-sparkml-package</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
+	<name>JPMML-SparkML-Package</name>
+	<description>JPMML-SparkML as an Apache Spark Package</description>
+	<url>https://github.com/jpmml/jpmml-sparkml-package</url>
+
 	<licenses>
 		<license>
 			<name>GNU Affero General Public License (AGPL) version 3.0</name>
@@ -32,8 +36,20 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.4.3</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -70,6 +86,11 @@
 									<shadedPattern>org.shaded.jpmml.schema</shadedPattern>
 								</relocation>
 							</relocations>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/sparkml2pmml.properties</resource>
+								</transformer>
+							</transformers>
 						</configuration>
 					</execution>
 				</executions>
