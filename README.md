@@ -15,9 +15,17 @@ git clone https://github.com/jpmml/jpmml-sparkml-package.git
 cd jpmml-sparkml-package
 ```
 
-When targeting Apache Spark 1.6.X, check out the `spark-1.6.X` development branch:
+The repository contains a number development branches:
+
+| Branch | Apache Spark version | JPMML-SparkML(-Package) version |
+|--------|----------------------|---------------------------------|
+| `master` | 2.1.X | 1.2(-SNAPSHOT) |
+| `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
+| `spark-1.6.X` | 1.6.X | 1.0(-SNAPSHOT) |
+
+Check out the correct development branch. For example, when targeting Apache Spark 2.0.X, check out the `spark-2.0.X` development branch:
 ```
-git checkout spark-1.6.X
+git checkout spark-2.0.X
 ```
 
 ### Scala ###
