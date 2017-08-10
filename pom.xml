@@ -4,7 +4,7 @@
 
 	<groupId>org.jpmml</groupId>
 	<artifactId>jpmml-sparkml-package</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.3-SNAPSHOT</version>
 
 	<name>JPMML-SparkML-Package</name>
 	<description>JPMML-SparkML as an Apache Spark Package</description>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>jpmml-sparkml</artifactId>
-			<version>1.2.4</version>
+			<version>1.3.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.beust</groupId>
@@ -196,4 +196,3 @@
 		</profile>
 	</profiles>
 </project>
-

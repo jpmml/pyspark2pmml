@@ -5,7 +5,7 @@ JPMML-SparkML as an [Apache Spark Package](https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark](http://spark.apache.org/) 1.6.X, 2.0.X or 2.1.X.
+* [Apache Spark](http://spark.apache.org/) 1.6.X, 2.0.X, 2.1.X or 2.2.X.
 
 # Installation #
 
@@ -19,13 +19,14 @@ The repository contains a number development branches:
 
 | Branch | Apache Spark version | JPMML-SparkML(-Package) version |
 |--------|----------------------|---------------------------------|
-| `master` | 2.1.X | 1.2(-SNAPSHOT) |
+| `master` | 2.2.X | 1.3(-SNAPSHOT) |
+| `spark-2.1.X` | 2.1.X | 1.2(-SNAPSHOT) |
 | `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
 | `spark-1.6.X` | 1.6.X | 1.0(-SNAPSHOT) |
 
-Check out the correct development branch. For example, when targeting Apache Spark 2.0.X, check out the `spark-2.0.X` development branch:
+Check out the correct development branch. For example, when targeting Apache Spark 2.1.X, check out the `spark-2.1.X` development branch:
 ```
-git checkout spark-2.0.X
+git checkout spark-2.1.X
 ```
 
 ### Scala ###
@@ -35,7 +36,7 @@ Build the project:
 mvn clean package
 ```
 
-The build produces an uber-JAR file `target/jpmml-sparkml-package-1.2-SNAPSHOT.jar`.
+The build produces an uber-JAR file `target/jpmml-sparkml-package-1.3-SNAPSHOT.jar`.
 
 ### PySpark ###
 
@@ -49,7 +50,7 @@ Build the project using the `pyspark` profile; use the `python.exe` system prope
 mvn -Ppyspark -Dpython.exe=/usr/bin/python3.4 clean package
 ```
 
-The build produces an EGG file `target/jpmml_sparkml-1.2rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.2-SNAPSHOT.jar`.
+The build produces an EGG file `target/jpmml_sparkml-1.3rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.3-SNAPSHOT.jar`.
 
 Test the uber-JAR file:
 ```
@@ -63,7 +64,7 @@ nosetests
 
 Launch the Spark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
 ```
-spark-shell --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.2-SNAPSHOT.jar
+spark-shell --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.3-SNAPSHOT.jar
 ```
 
 Fitting an example pipeline model:
@@ -90,12 +91,12 @@ println(new String(pmmlBytes, "UTF-8"))
 
 Add the EGG file to the `PYTHONPATH` environment variable:
 ```
-export PYTHONPATH=$PYTHONPATH:/path/to/jpmml-sparkml-package/target/jpmml_sparkml-1.2rc0.egg
+export PYTHONPATH=$PYTHONPATH:/path/to/jpmml-sparkml-package/target/jpmml_sparkml-1.3rc0.egg
 ```
 
 Launch the PySpark shell with JPMML-SparkML-Package; use `--jars` to specify the location of the uber-JAR file:
 ```
-pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.2-SNAPSHOT.jar
+pyspark --jars /path/to/jpmml-sparkml-package/target/jpmml-sparkml-package-1.3-SNAPSHOT.jar
 ```
 
 Fitting an example pipeline model:
