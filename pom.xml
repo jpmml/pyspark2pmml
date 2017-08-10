@@ -18,6 +18,10 @@
 		</license>
 	</licenses>
 
+	<properties>
+		<python.exe>python</python.exe>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jpmml</groupId>
@@ -117,6 +121,7 @@
 						<targetPath>${project.build.directory}/egg-sources/</targetPath>
 					</resource>
 				</resources>
+
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -149,7 +154,7 @@
 									<goal>exec</goal>
 								</goals>
 								<configuration>
-									<executable>python</executable>
+									<executable>${python.exe}</executable>
 									<arguments>
 										<argument>setup.py</argument>
 										<argument>bdist_egg</argument>

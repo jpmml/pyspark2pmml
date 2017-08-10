@@ -44,9 +44,9 @@ Add the Python bindings of Apache Spark to the `PYTHONPATH` environment variable
 export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python
 ```
 
-Build the project using the `pyspark` profile:
+Build the project using the `pyspark` profile; use the `python.exe` system property to specify the location of the Python executable (eg. switching between Python 2.X and 3.X executables):
 ```
-mvn -Ppyspark clean package
+mvn -Ppyspark -Dpython.exe=/usr/bin/python3.4 clean package
 ```
 
 The build produces an EGG file `target/jpmml_sparkml-1.2rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.2-SNAPSHOT.jar`.
