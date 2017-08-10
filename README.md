@@ -5,7 +5,7 @@ JPMML-SparkML as an [Apache Spark Package](https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark](http://spark.apache.org/) 1.6.X, 2.0.X or 2.1.X.
+* [Apache Spark](http://spark.apache.org/) 1.6.X, 2.0.X, 2.1.X or 2.2.X.
 
 # Installation #
 
@@ -19,14 +19,12 @@ The repository contains a number development branches:
 
 | Branch | Apache Spark version | JPMML-SparkML(-Package) version |
 |--------|----------------------|---------------------------------|
-| `master` | 2.1.X | 1.2(-SNAPSHOT) |
+| `master` | 2.2.X | 1.3(-SNAPSHOT) |
+| `spark-2.1.X` | 2.1.X | 1.2(-SNAPSHOT) |
 | `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
 | `spark-1.6.X` | 1.6.X | 1.0(-SNAPSHOT) |
 
-Check out the correct development branch. For example, when targeting Apache Spark 1.6.X, check out the `spark-1.6.X` development branch:
-```
-git checkout spark-1.6.X
-```
+Check out the correct development branch.
 
 ### Scala ###
 
@@ -44,9 +42,9 @@ Add the Python bindings of Apache Spark to the `PYTHONPATH` environment variable
 export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python
 ```
 
-Build the project using the `pyspark` profile:
+Build the project using the `pyspark` profile; use the `python.exe` system property to specify the location of the Python executable (eg. switching between Python 2.X and 3.X executables):
 ```
-mvn -Ppyspark clean package
+mvn -Ppyspark -Dpython.exe=/usr/bin/python3.4 clean package
 ```
 
 The build produces an EGG file `target/jpmml_sparkml-1.0rc0.egg` and an uber-JAR file `target/jpmml-sparkml-package-1.0-SNAPSHOT.jar`.
