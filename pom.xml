@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.jpmml</groupId>
 			<artifactId>jpmml-sparkml</artifactId>
-			<version>1.2.7</version>
+			<version>1.2.8</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.beust</groupId>
@@ -53,7 +53,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -88,10 +88,6 @@
 								<relocation>
 									<pattern>org.jpmml.model</pattern>
 									<shadedPattern>org.shaded.jpmml.model</shadedPattern>
-								</relocation>
-								<relocation>
-									<pattern>org.jpmml.schema</pattern>
-									<shadedPattern>org.shaded.jpmml.schema</shadedPattern>
 								</relocation>
 							</relocations>
 							<transformers>
@@ -184,7 +180,7 @@
 				<dependency>
 					<groupId>org.jpmml</groupId>
 					<artifactId>jpmml-xgboost</artifactId>
-					<version>1.2.1</version>
+					<version>[1.3.0,)</version>
 					<exclusions>
 						<exclusion>
 							<groupId>com.beust</groupId>
