@@ -5,7 +5,7 @@ JPMML-SparkML as an [Apache Spark Package](https://spark-packages.org/).
 
 # Prerequisites #
 
-* [Apache Spark](http://spark.apache.org/) 1.6.X, 2.0.X, 2.1.X or 2.2.X.
+* [Apache Spark](http://spark.apache.org/) 2.0.X, 2.1.X, 2.2.X or 2.3.X.
 
 # Installation #
 
@@ -19,14 +19,14 @@ The repository contains a number development branches:
 
 | Branch | Apache Spark version | JPMML-SparkML(-Package) version |
 |--------|----------------------|---------------------------------|
-| `master` | 2.2.X | 1.3(-SNAPSHOT) |
+| `master` | 2.3.X | 1.4(-SNAPSHOT) |
+| `spark-2.2.X` | 2.2.X | 1.3(-SNAPSHOT) |
 | `spark-2.1.X` | 2.1.X | 1.2(-SNAPSHOT) |
 | `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
-| `spark-1.6.X` | 1.6.X | 1.0(-SNAPSHOT) |
 
-Check out the correct development branch. For example, when targeting Apache Spark 2.1.X, check out the `spark-2.1.X` development branch:
+Check out the correct development branch. For example, when targeting Apache Spark 2.2.X, check out the `spark-2.2.X` development branch:
 ```
-git checkout spark-2.1.X
+git checkout spark-2.2.X
 ```
 
 ### Scala ###
