@@ -2,13 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.jpmml</groupId>
-	<artifactId>jpmml-sparkml-package</artifactId>
+	<groupId>pyspark2pmml</groupId>
+	<artifactId>pyspark2pmml</artifactId>
 	<version>1.4-SNAPSHOT</version>
-
-	<name>JPMML-SparkML-Package</name>
-	<description>JPMML-SparkML as an Apache Spark Package</description>
-	<url>https://github.com/jpmml/jpmml-sparkml-package</url>
 
 	<licenses>
 		<license>
@@ -38,6 +34,21 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>build</directory>
+						</fileset>
+						<fileset>
+							<directory>pyspark2pmml.egg-info</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -87,72 +98,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.5.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>${python.exe}</executable>
+							<arguments>
+								<argument>setup.py</argument>
+								<argument>bdist_egg</argument>
+								<argument>--dist-dir</argument>
+								<argument>${project.build.directory}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
 	<profiles>
-		<profile>
-			<id>pyspark</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-
-			<build>
-				<resources>
-					<resource>
-						<directory>src/main/python</directory>
-						<filtering>true</filtering>
-						<targetPath>${project.build.directory}/egg-sources/</targetPath>
-					</resource>
-				</resources>
-
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>1.12</version>
-						<executions>
-							<execution>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>regex-property</goal>
-								</goals>
-								<configuration>
-									<failIfNoMatch>false</failIfNoMatch>
-									<name>project.python_version</name>
-									<regex>-SNAPSHOT</regex>
-									<replacement>\.preview</replacement>
-									<value>${project.version}</value>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<version>1.5.0</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-								<configuration>
-									<executable>${python.exe}</executable>
-									<arguments>
-										<argument>setup.py</argument>
-										<argument>bdist_egg</argument>
-										<argument>--dist-dir</argument>
-										<argument>${project.build.directory}</argument>
-									</arguments>
-									<workingDirectory>${project.build.directory}/egg-sources/</workingDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>xgboost</id>
 			<activation>

@@ -6,22 +6,22 @@ findspark.init()
 
 import os
 
-projectDir = os.path.join(os.path.dirname(__file__), "../../../../..")
+testDir = os.path.dirname(__file__)
+pyspark2pmmlJarFile = os.path.join(os.path.join(testDir, "../.."), "target/pyspark2pmml-1.4-SNAPSHOT.jar")
 
-irisCsvFile = os.path.join(projectDir, "src/test/resources/Iris.csv")
-jpmmlPackageJarFile = os.path.join(projectDir, "target/jpmml-sparkml-package-1.4-SNAPSHOT.jar")
+os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + pyspark2pmmlJarFile + " pyspark-shell")
 
-os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + jpmmlPackageJarFile + " pyspark-shell")
+irisCsvFile = os.path.join(testDir, "resources/Iris.csv")
 
-from jpmml_sparkml import toPMMLBytes
 from pyspark.context import SparkContext
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 from pyspark.sql import SQLContext
+from pyspark2pmml import toPMMLBytes
 from unittest import TestCase
 
-class JPMMLTest(TestCase):
+class PMMLTest(TestCase):
 
 	def setUp(self):
 		self.sc = SparkContext()
