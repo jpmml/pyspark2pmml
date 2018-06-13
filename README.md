@@ -74,9 +74,12 @@ pipelineModel = pipeline.fit(df)
 
 Exporting the fitted example pipeline model to PMML byte array:
 ```python
-from pyspark2pmml import toPMMLBytes
+from pyspark2pmml import PMMLBuilder
 
-pmmlBytes = toPMMLBytes(sc, df, pipelineModel)
+pmmlBuilder = PMMLBuilder(sc, df, pipelineModel) \
+	.putOption(classifier, "compact", True)
+
+pmmlBytes = pmmlBuilder.buildByteArray()
 print(pmmlBytes.decode("UTF-8"))
 ```
 
