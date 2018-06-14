@@ -19,14 +19,14 @@ The repository contains a number development branches:
 
 | Branch | Apache Spark version | PySpark2PMML version |
 |--------|----------------------|----------------------|
-| `master` | 2.3.X | 1.4(-SNAPSHOT) |
+| `spark-2.3.X` | 2.3.X | 1.4(-SNAPSHOT) |
 | `spark-2.2.X` | 2.2.X | 1.3(-SNAPSHOT) |
 | `spark-2.1.X` | 2.1.X | 1.2(-SNAPSHOT) |
 | `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
 
-Check out the correct development branch. For example, when targeting Apache Spark 2.2.X, check out the `spark-2.2.X` development branch:
+Check out the correct development branch. For example, when targeting Apache Spark 2.3.X, check out the `spark-2.3.X` development branch:
 ```
-git checkout spark-2.2.X
+git checkout spark-2.3.X
 ```
 
 Add the Python bindings of Apache Spark to the `PYTHONPATH` environment variable:
