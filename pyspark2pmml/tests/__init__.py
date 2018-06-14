@@ -18,7 +18,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 from pyspark.sql import SQLContext
-from pyspark2pmml import toPMMLBytes
+from pyspark2pmml import PMMLBuilder
 from unittest import TestCase
 
 class PMMLTest(TestCase):
@@ -38,6 +38,8 @@ class PMMLTest(TestCase):
 		pipeline = Pipeline(stages = [formula, classifier])
 		pipelineModel = pipeline.fit(df)
 		
-		pmmlBytes = toPMMLBytes(self.sc, df, pipelineModel)
+		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel) \
+			.putOption(classifier, "compact", True)
+		pmmlBytes = pmmlBuilder.buildByteArray()
 		pmmlString = pmmlBytes.decode("UTF-8")
 		self.assertTrue(pmmlString.find("<PMML xmlns=\"http://www.dmg.org/PMML-4_3\" version=\"4.3\">") > -1)
