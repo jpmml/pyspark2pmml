@@ -6,12 +6,7 @@ findspark.init()
 
 import os
 
-testDir = os.path.dirname(__file__)
-pyspark2pmmlJarFile = os.path.join(os.path.join(testDir, "../.."), "target/pyspark2pmml-1.4-SNAPSHOT.jar")
-
-os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + pyspark2pmmlJarFile + " pyspark-shell")
-
-irisCsvFile = os.path.join(testDir, "resources/Iris.csv")
+os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + os.environ['JPMML_SPARKML_JAR'] + " pyspark-shell")
 
 from pyspark.context import SparkContext
 from pyspark.ml import Pipeline
@@ -31,7 +26,7 @@ class PMMLTest(TestCase):
 		self.sc.stop()
 
 	def testWorkflow(self):
-		df = self.sqlContext.read.csv(irisCsvFile, header = True, inferSchema = True)
+		df = self.sqlContext.read.csv(os.path.join(os.path.dirname(__file__), "resources/Iris.csv"), header = True, inferSchema = True)
 		
 		formula = RFormula(formula = "Species ~ .")
 		classifier = DecisionTreeClassifier()

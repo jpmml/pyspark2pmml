@@ -3,60 +3,60 @@ PySpark2PMML
 
 Python library for converting Apache Spark ML pipelines to PMML.
 
+# Features #
+
+This library is a thin wrapper around the [JPMML-SparkML](https://github.com/jpmml/jpmml-sparkml) library. For a list of supported Apache Spark ML Estimator and Transformer types, please refer to the documentation of the JPMML-SparkML project.
+
 # Prerequisites #
 
 * [Apache Spark](http://spark.apache.org/) 2.0.X, 2.1.X, 2.2.X or 2.3.X.
+* Python 2.7, 3.4 or newer.
+
 
 # Installation #
 
-Clone the PySpark2PMML project and enter its directory:
+Install the latest version from GitHub:
 ```
-git clone https://github.com/jpmml/pyspark2pmml.git
-cd pyspark2pmml
-```
-
-The repository contains a number development branches:
-
-| Branch | Apache Spark version | PySpark2PMML version |
-|--------|----------------------|----------------------|
-| `master` | 2.3.X | 1.4(-SNAPSHOT) |
-| `spark-2.2.X` | 2.2.X | 1.3(-SNAPSHOT) |
-| `spark-2.1.X` | 2.1.X | 1.2(-SNAPSHOT) |
-| `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
-
-Check out the correct development branch. For example, when targeting Apache Spark 2.2.X, check out the `spark-2.2.X` development branch:
-```
-git checkout spark-2.2.X
+pip install --user --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 ```
 
-Add the Python bindings of Apache Spark to the `PYTHONPATH` environment variable:
+# Configuration #
+
+PySpark2PMML must be paired with JPMML-SparkML based on the following compatibility matrix:
+
+| Apache Spark version | JPMML-SparkML development branch | JPMML-SparkML version |
+|----------------------|----------------------------------|-----------------------|
+| 2.0.X | `1.1.X` | 1.1.19 |
+| 2.1.X | `1.2.X` | 1.2.11 |
+| 2.2.X | `1.3.X` | 1.3.7 |
+| 2.3.X | `master` | 1.4.4 |
+
+### Apache Spark 2.3.X
+
+Launch PySpark; use the `--packages` command-line option to specify the Maven Central repository coordinates of the JPMML-SparkML library:
 ```
-export PYTHONPATH=$PYTHONPATH:$SPARK_HOME/python
+pyspark --packages org.jpmml:jpmml-sparkml:${version}
 ```
 
-Build the project using [Apache Maven](http://maven.apache.org/); use the `python.exe` system property to specify the location of the Python executable (eg. switching between Python 2.X and 3.X executables):
+### Apache Spark 2.0.X through 2.2.X
+
+Apache Spark versions prior to 2.3.0 prepend a legacy version of the JPMML-Model library to application classpath, which brings about fatal class loading errors with all JPMML software, including the JPMML-SparkML library. This conflict is documented in [SPARK-15526](https://issues.apache.org/jira/browse/SPARK-15526).
+
+The workaround is to switch from the JPMML-SparkML library to the JPMML-SparkML uber-JAR file that bundles "shaded" classes. Currently, this JPMML-SparkML uber-JAR file needs to be built locally using [Apache Maven](http://maven.apache.org/):
 ```
-mvn -Dpython.exe=/usr/bin/python3.4 clean package
+git clone https://github.com/jpmml/jpmml-sparkml.git
+cd jpmml-sparkml
+# Check out the intended development branch
+git checkout ${development branch}
+mvn clean package
 ```
 
-The build produces an EGG file `target/pyspark2pmml-1.4rc0.egg` and an uber-JAR file `target/pyspark2pmml-1.4-SNAPSHOT.jar`.
-
-Test the uber-JAR file:
+Launch PySpark; use the `--jars` command-line option to specify the location of the JPMML-SparkML uber-JAR file:
 ```
-nosetests
+pyspark --jars /path/to/jpmml-sparkml/target/converter-executable-${version}.jar
 ```
 
 # Usage #
-
-Add the EGG file to the `PYTHONPATH` environment variable:
-```
-export PYTHONPATH=$PYTHONPATH:/path/to/pyspark2pmml/target/pyspark2pmml-1.4rc0.egg
-```
-
-Launch the PySpark shell with PySpark2PMML; use `--jars` to specify the location of the uber-JAR file:
-```
-pyspark --jars /path/to/pyspark2pmml/target/pyspark2pmml-1.4-SNAPSHOT.jar
-```
 
 Fitting an example pipeline model:
 ```python
