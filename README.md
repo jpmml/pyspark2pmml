@@ -19,7 +19,7 @@ The repository contains a number development branches:
 
 | Branch | Apache Spark version | PySpark2PMML version |
 |--------|----------------------|----------------------|
-| `master` | 2.3.X | 1.4(-SNAPSHOT) |
+| `spark-2.3.X` | 2.3.X | 1.4(-SNAPSHOT) |
 | `spark-2.2.X` | 2.2.X | 1.3(-SNAPSHOT) |
 | `spark-2.1.X` | 2.1.X | 1.2(-SNAPSHOT) |
 | `spark-2.0.X` | 2.0.X | 1.1(-SNAPSHOT) |
@@ -74,9 +74,12 @@ pipelineModel = pipeline.fit(df)
 
 Exporting the fitted example pipeline model to PMML byte array:
 ```python
-from pyspark2pmml import toPMMLBytes
+from pyspark2pmml import PMMLBuilder
 
-pmmlBytes = toPMMLBytes(sc, df, pipelineModel)
+pmmlBuilder = PMMLBuilder(sc, df, pipelineModel) \
+	.putOption(classifier, "compact", True)
+
+pmmlBytes = pmmlBuilder.buildByteArray()
 print(pmmlBytes.decode("UTF-8"))
 ```
 
