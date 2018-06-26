@@ -12,7 +12,6 @@ This library is a thin wrapper around the [JPMML-SparkML](https://github.com/jpm
 * [Apache Spark](http://spark.apache.org/) 2.0.X, 2.1.X, 2.2.X or 2.3.X.
 * Python 2.7, 3.4 or newer.
 
-
 # Installation #
 
 Install the latest version from GitHub:
@@ -26,10 +25,10 @@ PySpark2PMML must be paired with JPMML-SparkML based on the following compatibil
 
 | Apache Spark version | JPMML-SparkML development branch | JPMML-SparkML version |
 |----------------------|----------------------------------|-----------------------|
-| 2.0.X | `1.1.X` | 1.1.19 |
-| 2.1.X | `1.2.X` | 1.2.11 |
-| 2.2.X | `1.3.X` | 1.3.7 |
-| 2.3.X | `master` | 1.4.4 |
+| 2.0.X | `1.1.X` | 1.1.20 |
+| 2.1.X | `1.2.X` | 1.2.12 |
+| 2.2.X | `1.3.X` | 1.3.8 |
+| 2.3.X | `master` | 1.4.5 |
 
 ### Apache Spark 2.3.X
 
@@ -42,18 +41,11 @@ pyspark --packages org.jpmml:jpmml-sparkml:${version}
 
 Apache Spark versions prior to 2.3.0 prepend a legacy version of the JPMML-Model library to application classpath, which brings about fatal class loading errors with all JPMML software, including the JPMML-SparkML library. This conflict is documented in [SPARK-15526](https://issues.apache.org/jira/browse/SPARK-15526).
 
-The workaround is to switch from the JPMML-SparkML library to the JPMML-SparkML uber-JAR file that bundles "shaded" classes. Currently, this JPMML-SparkML uber-JAR file needs to be built locally using [Apache Maven](http://maven.apache.org/):
-```
-git clone https://github.com/jpmml/jpmml-sparkml.git
-cd jpmml-sparkml
-# Check out the intended development branch
-git checkout ${development branch}
-mvn clean package
-```
+The workaround is to switch from the JPMML-SparkML library to the JPMML-SparkML uber-JAR file that bundles "shaded" classes. Pre-built JPMML-SparkML uber-JAR files can be downloaded from the [releases page](https://github.com/jpmml/jpmml-sparkml/releases). Alternatively, they can be built locally from source checkout using Apache Maven.
 
 Launch PySpark; use the `--jars` command-line option to specify the location of the JPMML-SparkML uber-JAR file:
 ```
-pyspark --jars /path/to/jpmml-sparkml/target/converter-executable-${version}.jar
+pyspark --jars /path/to/jpmml-sparkml-executable-${version}.jar
 ```
 
 # Usage #

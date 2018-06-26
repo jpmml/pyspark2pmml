@@ -23,11 +23,25 @@ class PMMLBuilder(object):
 	def buildByteArray(self):
 		return self.javaPmmlBuilder.buildByteArray()
 
+	def buildFile(self, path):
+		javaFile = self.sc._jvm.java.io.File(path)
+		javaFile = self.javaPmmlBuilder.buildFile(javaFile)
+		return javaFile.getAbsolutePath()
+
 	def putOption(self, pipelineStage, key, value):
-		javaPipelineStage = pipelineStage._to_java()
-		self.javaPmmlBuilder.putOption(javaPipelineStage, _py2java(self.sc, key), _py2java(self.sc, value))
+		javaKey = _py2java(self.sc, key)
+		javaValue = _py2java(self.sc, value)
+		if pipelineStage is None:
+			self.javaPmmlBuilder.putOption(javaKey, javaValue)
+		else:
+			javaPipelineStage = pipelineStage._to_java()
+			self.javaPmmlBuilder.putOption(javaPipelineStage, javaKey, javaValue)
+		return self
+
+	def verify(self, df, precision = 1e-14, zeroThreshold = 1e-14):
+		javaDf = _py2java(self.sc, df)
+		self.javaPmmlBuilder.verify(javaDf, precision, zeroThreshold)
 		return self
 
 def toPMMLBytes(sc, df, pipelineModel):
-	pmmlBuilder = PMMLBuilder(sc, df, pipelineModel)
-	return pmmlBuilder.buildByteArray()
+	raise RuntimeError("Replace \"toPMMLBytes(sc, df, pipelineModel)\" with \"PMMLBuilder(sc, df, pipelineModel).buildByteArray()\"")

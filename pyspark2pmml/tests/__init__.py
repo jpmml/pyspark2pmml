@@ -5,6 +5,7 @@ import findspark
 findspark.init()
 
 import os
+import tempfile
 
 os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + os.environ['JPMML_SPARKML_JAR'] + " pyspark-shell")
 
@@ -34,7 +35,20 @@ class PMMLTest(TestCase):
 		pipelineModel = pipeline.fit(df)
 		
 		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel) \
-			.putOption(classifier, "compact", True)
+			.verify(df.sample(True, 0.1))
+
 		pmmlBytes = pmmlBuilder.buildByteArray()
 		pmmlString = pmmlBytes.decode("UTF-8")
-		self.assertTrue(pmmlString.find("<PMML xmlns=\"http://www.dmg.org/PMML-4_3\" version=\"4.3\">") > -1)
+
+		self.assertTrue(pmmlString.find("<PMML xmlns=\"http://www.dmg.org/PMML-4_3\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.3\">") > -1)
+		self.assertTrue(pmmlString.find("<VerificationFields>") > -1)
+
+		pmmlBuilder.putOption(classifier, "compact", False)
+		dtcFile = tempfile.NamedTemporaryFile(prefix = "dtc-", suffix = ".pmml")
+		dtcPmmlPath = pmmlBuilder.buildFile(dtcFile.name)
+
+		pmmlBuilder.putOption(classifier, "compact", True)
+		dtcCompactFile = tempfile.NamedTemporaryFile(prefix = "dtc-compact-", suffix = ".pmml")
+		dtcCompactPmmlPath = pmmlBuilder.buildFile(dtcCompactFile.name)
+
+		self.assertGreater(os.path.getsize(dtcPmmlPath), os.path.getsize(dtcCompactPmmlPath))
