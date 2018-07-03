@@ -9,6 +9,7 @@ import tempfile
 
 os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + os.environ['JPMML_SPARKML_JAR'] + " pyspark-shell")
 
+from py4j.java_gateway import JavaObject
 from pyspark.context import SparkContext
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
@@ -35,20 +36,24 @@ class PMMLTest(TestCase):
 		pipelineModel = pipeline.fit(df)
 		
 		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel) \
-			.verify(df.sample(True, 0.1))
+			.verify(df.sample(False, 0.1))
 
-		pmmlBytes = pmmlBuilder.buildByteArray()
-		pmmlString = pmmlBytes.decode("UTF-8")
+		pmml = pmmlBuilder.build()
+		self.assertIsInstance(pmml, JavaObject)
 
-		self.assertTrue(pmmlString.find("<PMML xmlns=\"http://www.dmg.org/PMML-4_3\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.3\">") > -1)
-		self.assertTrue(pmmlString.find("<VerificationFields>") > -1)
+		pmmlByteArray = pmmlBuilder.buildByteArray()
+		self.assertIsInstance(pmmlByteArray, bytes)
+		
+		pmmlString = pmmlByteArray.decode("UTF-8")
+		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_3\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.3\">" in pmmlString)
+		self.assertTrue("<VerificationFields>" in pmmlString)
 
-		pmmlBuilder.putOption(classifier, "compact", False)
-		dtcFile = tempfile.NamedTemporaryFile(prefix = "dtc-", suffix = ".pmml")
-		dtcPmmlPath = pmmlBuilder.buildFile(dtcFile.name)
+		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", False)
+		nonCompactFile = tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml")
+		nonCompactPmmlPath = pmmlBuilder.buildFile(nonCompactFile.name)
 
-		pmmlBuilder.putOption(classifier, "compact", True)
-		dtcCompactFile = tempfile.NamedTemporaryFile(prefix = "dtc-compact-", suffix = ".pmml")
-		dtcCompactPmmlPath = pmmlBuilder.buildFile(dtcCompactFile.name)
+		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", True)
+		compactFile = tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml")
+		compactPmmlPath = pmmlBuilder.buildFile(compactFile.name)
 
-		self.assertGreater(os.path.getsize(dtcPmmlPath), os.path.getsize(dtcCompactPmmlPath))
+		self.assertGreater(os.path.getsize(nonCompactPmmlPath), os.path.getsize(compactPmmlPath) + 100)
