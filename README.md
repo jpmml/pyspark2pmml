@@ -25,10 +25,10 @@ PySpark2PMML must be paired with JPMML-SparkML based on the following compatibil
 
 | Apache Spark version | JPMML-SparkML development branch | JPMML-SparkML uber-JAR file |
 |----------------------|----------------------------------|-----------------------------|
-| 2.0.X | `1.1.X` | [1.1.20](https://github.com/jpmml/jpmml-sparkml/releases/download/1.1.20/jpmml-sparkml-executable-1.1.20.jar) |
-| 2.1.X | `1.2.X` | [1.2.12](https://github.com/jpmml/jpmml-sparkml/releases/download/1.2.12/jpmml-sparkml-executable-1.2.12.jar) |
-| 2.2.X | `1.3.X` | [1.3.8](https://github.com/jpmml/jpmml-sparkml/releases/download/1.3.8/jpmml-sparkml-executable-1.3.8.jar) |
-| 2.3.X | `master` | [1.4.5](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.5/jpmml-sparkml-executable-1.4.5.jar) |
+| 2.0.X | `1.1.X` | [1.1.21](https://github.com/jpmml/jpmml-sparkml/releases/download/1.1.21/jpmml-sparkml-executable-1.1.21.jar) |
+| 2.1.X | `1.2.X` | [1.2.13](https://github.com/jpmml/jpmml-sparkml/releases/download/1.2.13/jpmml-sparkml-executable-1.2.13.jar) |
+| 2.2.X | `1.3.X` | [1.3.9](https://github.com/jpmml/jpmml-sparkml/releases/download/1.3.9/jpmml-sparkml-executable-1.3.9.jar) |
+| 2.3.X | `master` | [1.4.6](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.6/jpmml-sparkml-executable-1.4.6.jar) |
 
 Launch PySpark; use the `--jars` command-line option to specify the location of the JPMML-SparkML uber-JAR file:
 ```
