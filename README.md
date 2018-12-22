@@ -9,7 +9,7 @@ This package provides Python wrapper classes and functions for the [JPMML-SparkM
 
 # Prerequisites #
 
-* [Apache Spark](http://spark.apache.org/) 2.0.X, 2.1.X, 2.2.X, 2.3.X or 2.4.X.
+* [Apache Spark](https://spark.apache.org/) 2.0.X, 2.1.X, 2.2.X, 2.3.X or 2.4.X.
 * Python 2.7, 3.4 or newer.
 
 # Installation #
@@ -64,7 +64,7 @@ pmmlBuilder.buildFile("DecisionTreeIris.pmml")
 
 # License #
 
-PySpark2PMML is dual-licensed under the [GNU Affero General Public License (AGPL) version 3.0](http://www.gnu.org/licenses/agpl-3.0.html), and a commercial license.
+PySpark2PMML is dual-licensed under the [GNU Affero General Public License (AGPL) version 3.0](https://www.gnu.org/licenses/agpl-3.0.html), and a commercial license.
 
 # Additional information #
 
