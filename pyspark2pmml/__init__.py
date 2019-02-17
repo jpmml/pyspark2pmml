@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from py4j.java_gateway import JavaObject
 from pyspark.ml.common import _py2java
 
