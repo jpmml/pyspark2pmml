@@ -40,7 +40,7 @@ class PMMLTest(TestCase):
 		self.assertIsInstance(pmml, JavaObject)
 
 		pmmlByteArray = pmmlBuilder.buildByteArray()
-		self.assertIsInstance(pmmlByteArray, bytes)
+		self.assertTrue(isinstance(pmmlByteArray, bytes) or isinstance(pmmlByteArray, bytearray))
 		
 		pmmlString = pmmlByteArray.decode("UTF-8")
 		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_3\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.3\">" in pmmlString)
