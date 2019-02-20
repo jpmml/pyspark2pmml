@@ -1,4 +1,4 @@
 build/
-pyspark2pmml.egg-info/
+dist/
 __pycache__/
-*.pyc
+MANIFEST
