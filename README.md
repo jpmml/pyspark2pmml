@@ -23,8 +23,8 @@ pip install --user --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 
 PySpark2PMML must be paired with JPMML-SparkML based on the following compatibility matrix:
 
-| Apache Spark version | JPMML-SparkML development branch | JPMML-SparkML uber-JAR file |
-|----------------------|----------------------------------|-----------------------------|
+| Apache Spark version | JPMML-SparkML branch | JPMML-SparkML uber-JAR file |
+|----------------------|----------------------|-----------------------------|
 | 2.0.X | `1.1.X` | [1.1.23](https://github.com/jpmml/jpmml-sparkml/releases/download/1.1.23/jpmml-sparkml-executable-1.1.23.jar) |
 | 2.1.X | `1.2.X` | [1.2.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.2.15/jpmml-sparkml-executable-1.2.15.jar) |
 | 2.2.X | `1.3.X` | [1.3.11](https://github.com/jpmml/jpmml-sparkml/releases/download/1.3.11/jpmml-sparkml-executable-1.3.11.jar) |
