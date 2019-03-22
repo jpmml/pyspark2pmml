@@ -1,4 +1,4 @@
-from py4j.java_gateway import JavaObject
+from py4j.java_gateway import JavaClass
 from pyspark.ml.common import _py2java
 
 from .metadata import __copyright__, __license__, __version__
@@ -9,9 +9,10 @@ class PMMLBuilder(object):
 		javaDf = _py2java(sc, df)
 		javaSchema = javaDf.schema.__call__()
 		javaPipelineModel = pipelineModel._to_java()
-		javaPmmlBuilder = sc._jvm.org.jpmml.sparkml.PMMLBuilder(javaSchema, javaPipelineModel)
-		if(not isinstance(javaPmmlBuilder, JavaObject)):
+		javaPmmlBuilderClass = sc._jvm.org.jpmml.sparkml.PMMLBuilder
+		if(not isinstance(javaPmmlBuilderClass, JavaClass)):
 			raise RuntimeError("JPMML-SparkML not found on classpath")
+		javaPmmlBuilder = javaPmmlBuilderClass(javaSchema, javaPipelineModel)
 		self.sc = sc
 		self.javaPmmlBuilder = javaPmmlBuilder
 
