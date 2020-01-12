@@ -28,8 +28,8 @@ PySpark2PMML must be paired with JPMML-SparkML based on the following compatibil
 | 2.0.X | `1.1.X` (Archived) | [1.1.23](https://github.com/jpmml/jpmml-sparkml/releases/download/1.1.23/jpmml-sparkml-executable-1.1.23.jar) |
 | 2.1.X | `1.2.X` (Archived) | [1.2.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.2.15/jpmml-sparkml-executable-1.2.15.jar) |
 | 2.2.X | `1.3.X` (Archived) | [1.3.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.3.15/jpmml-sparkml-executable-1.3.15.jar) |
-| 2.3.X | `1.4.X` | [1.4.12](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.12/jpmml-sparkml-executable-1.4.12.jar) |
-| 2.4.X | `master` | [1.5.5](https://github.com/jpmml/jpmml-sparkml/releases/download/1.5.5/jpmml-sparkml-executable-1.5.5.jar) |
+| 2.3.X | `1.4.X` | [1.4.14](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.14/jpmml-sparkml-executable-1.4.14.jar) |
+| 2.4.X | `master` | [1.5.7](https://github.com/jpmml/jpmml-sparkml/releases/download/1.5.7/jpmml-sparkml-executable-1.5.7.jar) |
 
 Launch PySpark; use the `--jars` command-line option to specify the location of the JPMML-SparkML uber-JAR file:
 ```
