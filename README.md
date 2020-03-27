@@ -9,7 +9,7 @@ This package provides Python wrapper classes and functions for the [JPMML-SparkM
 
 # Prerequisites #
 
-* Apache Spark 2.0.X, 2.1.X, 2.2.X, 2.3.X or 2.4.X.
+* Apache Spark 2.0.X, 2.1.X, 2.2.X, 2.3.X, 2.4.X or 3.0.X.
 * Python 2.7, 3.4 or newer.
 
 # Installation #
@@ -28,8 +28,9 @@ PySpark2PMML must be paired with JPMML-SparkML based on the following compatibil
 | 2.0.X | `1.1.X` (Archived) | [1.1.23](https://github.com/jpmml/jpmml-sparkml/releases/download/1.1.23/jpmml-sparkml-executable-1.1.23.jar) |
 | 2.1.X | `1.2.X` (Archived) | [1.2.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.2.15/jpmml-sparkml-executable-1.2.15.jar) |
 | 2.2.X | `1.3.X` (Archived) | [1.3.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.3.15/jpmml-sparkml-executable-1.3.15.jar) |
-| 2.3.X | `1.4.X` | [1.4.14](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.14/jpmml-sparkml-executable-1.4.14.jar) |
-| 2.4.X | `master` | [1.5.7](https://github.com/jpmml/jpmml-sparkml/releases/download/1.5.7/jpmml-sparkml-executable-1.5.7.jar) |
+| 2.3.X | `1.4.X` | [1.4.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.15/jpmml-sparkml-executable-1.4.15.jar) |
+| 2.4.X | `1.5.X` | [1.5.8](https://github.com/jpmml/jpmml-sparkml/releases/download/1.5.8/jpmml-sparkml-executable-1.5.8.jar) |
+| 3.0.X | `master` | [1.6.0](https://github.com/jpmml/jpmml-sparkml/releases/download/1.6.0/jpmml-sparkml-executable-1.6.0.jar) |
 
 Launch PySpark; use the `--jars` command-line option to specify the location of the JPMML-SparkML uber-JAR file:
 ```
