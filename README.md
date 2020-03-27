@@ -14,9 +14,16 @@ This package provides Python wrapper classes and functions for the [JPMML-SparkM
 
 # Installation #
 
-Install the latest version from GitHub:
+Install a release version from PyPI:
+
 ```
-pip install --user --upgrade git+https://github.com/jpmml/pyspark2pmml.git
+pip install pyspark2pmml
+```
+
+Alternatively, install the latest snapshot version from GitHub:
+
+```
+pip install --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 ```
 
 # Configuration and usage #
@@ -65,10 +72,12 @@ pmmlBuilder.buildFile("DecisionTreeIris.pmml")
 
 # License #
 
-PySpark2PMML is dual-licensed under the [GNU Affero General Public License (AGPL) version 3.0](https://www.gnu.org/licenses/agpl-3.0.html), and a commercial license.
+PySpark2PMML is licensed under the terms and conditions of the [GNU Affero General Public License, Version 3.0](https://www.gnu.org/licenses/agpl-3.0.html).
+
+If you would like to use PySpark2PMML in a proprietary software project, then it is possible to enter into a licensing agreement which makes PySpark2PMML available under the terms and conditions of the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause) instead.
 
 # Additional information #
 
 PySpark2PMML is developed and maintained by Openscoring Ltd, Estonia.
 
-Interested in using JPMML software in your application? Please contact [info@openscoring.io](mailto:info@openscoring.io)
+Interested in using [Java PMML API](https://github.com/jpmml) software in your company? Please contact [info@openscoring.io](mailto:info@openscoring.io)
