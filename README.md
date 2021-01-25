@@ -44,7 +44,7 @@ Launch PySpark; use the `--jars` command-line option to specify the location of 
 pyspark --jars /path/to/jpmml-sparkml-executable-${version}.jar
 ```
 
-Fitting an example pipeline model:
+Fitting a Spark ML pipeline:
 
 ```python
 from pyspark.ml import Pipeline
@@ -59,13 +59,26 @@ pipeline = Pipeline(stages = [formula, classifier])
 pipelineModel = pipeline.fit(df)
 ```
 
-Exporting the fitted example pipeline model to a PMML file:
+Exporting the fitted Spark ML pipeline to a PMML file:
 
 ```python
 from pyspark2pmml import PMMLBuilder
 
+pmmlBuilder = PMMLBuilder(sc, df, pipelineModel)
+
+pmmlBuilder.buildFile("DecisionTreeIris.pmml")
+```
+
+The representation of individual Spark ML pipeline stages can be customized via conversion options:
+
+```python
+from pyspark2pmml import PMMLBuilder
+
+classifierModel = pipelineModel.stages[1]
+
 pmmlBuilder = PMMLBuilder(sc, df, pipelineModel) \
-	.putOption(classifier, "compact", True)
+	.putOption(classifierModel, "compact", False) \
+	.putOption(classifierModel, "estimate_featureImportances", True)
 
 pmmlBuilder.buildFile("DecisionTreeIris.pmml")
 ```
