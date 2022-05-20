@@ -1,11 +1,11 @@
 PySpark2PMML
 ============
 
-Python library for converting Apache Spark ML pipelines to PMML.
+Python package for converting [Apache Spark ML](https://spark.apache.org/) pipelines to PMML.
 
 # Features #
 
-This package provides Python wrapper classes and functions for the [JPMML-SparkML](https://github.com/jpmml/jpmml-sparkml) library. For the full list of supported Apache Spark ML Estimator and Transformer types, please refer to JPMML-SparkML documentation.
+This package is a thin PySpark wrapper for the [JPMML-SparkML](https://github.com/jpmml/jpmml-sparkml#features) library.
 
 # Prerequisites #
 
@@ -30,20 +30,22 @@ pip install --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 
 PySpark2PMML must be paired with JPMML-SparkML based on the following compatibility matrix:
 
-| Apache Spark version | JPMML-SparkML branch | JPMML-SparkML uber-JAR file |
-|----------------------|----------------------|-----------------------------|
-| 2.0.X | `1.1.X` (Archived) | [1.1.23](https://github.com/jpmml/jpmml-sparkml/releases/download/1.1.23/jpmml-sparkml-executable-1.1.23.jar) |
-| 2.1.X | `1.2.X` (Archived) | [1.2.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.2.15/jpmml-sparkml-executable-1.2.15.jar) |
-| 2.2.X | `1.3.X` (Archived) | [1.3.15](https://github.com/jpmml/jpmml-sparkml/releases/download/1.3.15/jpmml-sparkml-executable-1.3.15.jar) |
-| 2.3.X | `1.4.X` (Archived) | [1.4.21](https://github.com/jpmml/jpmml-sparkml/releases/download/1.4.21/jpmml-sparkml-executable-1.4.21.jar) |
-| 2.4.X | `1.5.X` (Archived) | [1.5.14](https://github.com/jpmml/jpmml-sparkml/releases/download/1.5.14/jpmml-sparkml-executable-1.5.14.jar) |
-| 3.0.X | `1.6.X` | [1.6.6](https://github.com/jpmml/jpmml-sparkml/releases/download/1.6.6/jpmml-sparkml-executable-1.6.6.jar) |
-| 3.1.X | `1.7.X` | [1.7.3](https://github.com/jpmml/jpmml-sparkml/releases/download/1.7.3/jpmml-sparkml-executable-1.7.3.jar) |
-| 3.2.X | `master` | [1.8.0](https://github.com/jpmml/jpmml-sparkml/releases/download/1.8.0/jpmml-sparkml-executable-1.8.0.jar) |
+| Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
+|----------------------|----------------------|------------------------------|
+| 3.0.X | [`2.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.0.X) | 2.0.0 |
+| 3.1.X | [`2.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.1.X) | 2.1.0 |
+| 3.2.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 2.2.0 |
 
-Launch PySpark; use the `--jars` command-line option to specify the location of the JPMML-SparkML uber-JAR file:
+Launch PySpark; use the `--packages` command-line option to specify the coordinates of relevant JPMML-SparkML modules:
+
+* `org.jpmml:pmml-sparkml:${version}` - Core module.
+* `org.jpmml:pmml-sparkml-lightgbm:${version}` - LightGBM via SynapseML extension module.
+* `org.jpmml:pmml-sparkml-xgboost:${version}` - XGBoost via XGBoost4J-Spark extension module.
+
+Launching core:
+
 ```
-pyspark --jars /path/to/jpmml-sparkml-executable-${version}.jar
+pyspark --packages org.jpmml:pmml-sparkml:${version}
 ```
 
 Fitting a Spark ML pipeline:
