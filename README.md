@@ -9,7 +9,7 @@ This package is a thin PySpark wrapper for the [JPMML-SparkML](https://github.co
 
 # Prerequisites #
 
-* Apache Spark 2.0.X, 2.1.X, 2.2.X, 2.3.X, 2.4.X, 3.0.X, 3.1.X or 3.2.X.
+* Apache Spark 2.0.X, 2.1.X, 2.2.X, 2.3.X, 2.4.X, 3.0.X, 3.1.X, 3.2.X or 3.3.X.
 * Python 2.7, 3.4 or newer.
 
 # Installation #
@@ -32,9 +32,10 @@ PySpark2PMML must be paired with JPMML-SparkML based on the following compatibil
 
 | Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
 |----------------------|----------------------|------------------------------|
-| 3.0.X | [`2.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.0.X) | 2.0.0 |
-| 3.1.X | [`2.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.1.X) | 2.1.0 |
-| 3.2.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 2.2.0 |
+| 3.0.X | [`2.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.0.X) | 2.0.1 |
+| 3.1.X | [`2.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.1.X) | 2.1.1 |
+| 3.2.X | [`2.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.2.X) | 2.2.1 |
+| 3.3.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 2.3.0 |
 
 Launch PySpark; use the `--packages` command-line option to specify the coordinates of relevant JPMML-SparkML modules:
 
