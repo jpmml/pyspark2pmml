@@ -30,14 +30,23 @@ pip install --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 
 PySpark2PMML must be paired with JPMML-SparkML based on the following compatibility matrix:
 
+Active development branches:
+
 | Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
 |----------------------|----------------------|------------------------------|
-| 3.0.X | [`2.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.0.X) | 2.0.3 |
-| 3.1.X | [`2.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.1.X) | 2.1.3 |
-| 3.2.X | [`2.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.2.X) | 2.2.3 |
-| 3.3.X | [`2.3.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.3.X) | 2.3.2 |
-| 3.4.X | [`2.4.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.4.X) | 2.4.1 |
-| 3.5.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 2.5.0 |
+| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.0 |
+| 3.5.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.1.0 |
+
+Stale development branches:
+
+| Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
+|----------------------|----------------------|------------------------------|
+| 3.0.X | [`2.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.0.X) | 2.0.6 |
+| 3.1.X | [`2.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.1.X) | 2.1.6 |
+| 3.2.X | [`2.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.2.X) | 2.2.6 |
+| 3.3.X | [`2.3.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.3.X) | 2.3.5 |
+| 3.4.X | [`2.4.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.4.X) | 2.4.4 |
+| 3.5.X | [`2.5.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.5.X) | 2.5.3 |
 
 Launch PySpark; use the `--packages` command-line option to specify the coordinates of relevant JPMML-SparkML modules:
 
