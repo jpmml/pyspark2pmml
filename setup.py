@@ -24,6 +24,7 @@ setup(
 	exclude_package_data = {
 		"" : ["README.md"],
 	},
+	python_requires = ">=3.6",
 	install_requires = [
 		"py4j"
 	]
