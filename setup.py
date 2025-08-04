@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 exec(open('pyspark2pmml/metadata.py').read())
 
@@ -20,9 +20,10 @@ setup(
 		"Topic :: Software Development",
 		"Topic :: Scientific/Engineering"
 	],
-	packages = [
-		"pyspark2pmml"
-	],
+	packages = find_packages(exclude = ["*.tests"]),
+	exclude_package_data = {
+		"" : ["README.md"],
+	},
 	install_requires = [
 		"py4j"
 	]
