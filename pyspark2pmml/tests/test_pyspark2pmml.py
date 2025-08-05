@@ -35,8 +35,13 @@ class PMMLTest(TestCase):
 	def tearDownClass(cls):
 		cls.spark.stop()
 
+	def readDataset(self, name):
+		return self.spark.read.csv(os.path.join(os.path.dirname(__file__), "resources/{}.csv".format(name)), header = True, inferSchema = True)
+
+class PySparkTest(PMMLTest):
+
 	def testWorkflow(self):
-		df = self.spark.read.csv(os.path.join(os.path.dirname(__file__), "resources/Iris.csv"), header = True, inferSchema = True)
+		df = self.readDataset("Iris")
 		
 		formula = RFormula(formula = "Species ~ .")
 		classifier = DecisionTreeClassifier()
@@ -57,11 +62,13 @@ class PMMLTest(TestCase):
 		self.assertTrue("<VerificationFields>" in pmmlString)
 
 		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", False)
-		nonCompactFile = tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml")
-		nonCompactPmmlPath = pmmlBuilder.buildFile(nonCompactFile.name)
+		with tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml") as nonCompactFile:
+			nonCompactPmmlPath = pmmlBuilder.buildFile(nonCompactFile.name)
+			nonCompactSize = os.path.getsize(nonCompactPmmlPath)
 
 		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", True)
-		compactFile = tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml")
-		compactPmmlPath = pmmlBuilder.buildFile(compactFile.name)
+		with tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml") as compactFile:
+			compactPmmlPath = pmmlBuilder.buildFile(compactFile.name)
+			compactSize = os.path.getsize(compactPmmlPath)
 
-		self.assertGreater(os.path.getsize(nonCompactPmmlPath), os.path.getsize(compactPmmlPath) + 100)
+		self.assertGreater(nonCompactSize, compactSize + 100)
