@@ -10,9 +10,7 @@ from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 from pyspark.sql import SparkSession
 from pyspark2pmml import PMMLBuilder
-from pyspark2pmml.xgboost import patch_model
 from unittest import SkipTest, TestCase
-from xgboost.spark import SparkXGBClassifier, SparkXGBRegressor
 
 import os
 import tempfile
@@ -88,6 +86,9 @@ class XGBoostTest(PMMLTest):
 
 	@requires_pmml_sparkml_xgboost
 	def testIris(self):
+		from pyspark2pmml.xgboost import patch_model
+		from xgboost.spark import SparkXGBClassifier
+
 		df = self.readDataset("Iris")
 
 		formula = RFormula(formula = "Species ~ .")
@@ -111,6 +112,9 @@ class XGBoostTest(PMMLTest):
 
 	@requires_pmml_sparkml_xgboost
 	def testAuto(self):
+		from pyspark2pmml.xgboost import patch_model
+		from xgboost.spark import SparkXGBRegressor
+
 		df = self.readDataset("Auto")
 
 		formula = RFormula(formula = "mpg ~ .")

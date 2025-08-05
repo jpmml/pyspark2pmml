@@ -14,7 +14,6 @@ jobs:
         config:
           - python: '3.9'
             pyspark: '3.0.3'
-            xgboost: '1.7.6'
             jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:2.0.6'
           - python: '3.9'
             pyspark: '3.4.4'
@@ -39,7 +38,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install pyspark==${{ matrix.config.pyspark }}
-        pip install xgboost==${{ matrix.config.xgboost }}
+        if [ -n "${{ matrix.config.xgboost }}" ]; then pip install xgboost==${{ matrix.config.xgboost }}; fi
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - env:
         JPMML_SPARKML_PACKAGES: ${{ matrix.config.jpmml-sparkml-packages }}
