@@ -9,7 +9,9 @@ from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 from pyspark.sql import SparkSession
 from pyspark2pmml import PMMLBuilder
+from pyspark2pmml.xgboost import patch_model
 from unittest import TestCase
+from xgboost.spark import SparkXGBClassifier
 
 import os
 import tempfile
@@ -57,7 +59,7 @@ class PySparkTest(PMMLTest):
 		pmmlByteArray = pmmlBuilder.buildByteArray()
 		self.assertTrue(isinstance(pmmlByteArray, bytes) or isinstance(pmmlByteArray, bytearray))
 		
-		pmmlString = pmmlByteArray.decode("UTF-8")
+		pmmlString = pmmlByteArray.decode("utf-8")
 		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">" in pmmlString)
 		self.assertTrue("<VerificationFields>" in pmmlString)
 
@@ -72,3 +74,31 @@ class PySparkTest(PMMLTest):
 			compactSize = os.path.getsize(compactPmmlPath)
 
 		self.assertGreater(nonCompactSize, compactSize + 100)
+
+class XGBClassifierTest(PMMLTest):
+
+	def testWorkflow(self):
+
+		if "pmml-sparkml-xgboost" not in jpmml_sparkml_packages:
+			return
+
+		df = self.readDataset("Iris")
+
+		formula = RFormula(formula = "Species ~ .")
+		classifier = SparkXGBClassifier()
+		pipeline = Pipeline(stages = [formula, classifier])
+		pipelineModel = pipeline.fit(df)
+
+		with self.assertRaises(AttributeError):
+			pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+
+		model = pipelineModel.stages[-1]
+
+		patch_model(self.sc, model)
+
+		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+
+		pmmlByteArray = pmmlBuilder.buildByteArray()
+
+		pmmlString = pmmlByteArray.decode("utf-8")
+		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">" in pmmlString)
