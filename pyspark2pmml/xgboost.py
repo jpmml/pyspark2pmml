@@ -27,6 +27,16 @@ def toJavaModel(sc, model):
 			.setPredictionCol(model.getPredictionCol()) \
 			.setProbabilityCol(model.getProbabilityCol())
 		return javaModel
+	elif isinstance(model, SparkXGBRegressorModel):
+		sklearnModel = model._xgb_sklearn_model
+		javaBooster = toJavaBooster(sc, sklearnModel.get_booster())
+		javaModel = sc._jvm.ml.dmlc.xgboost4j.scala.spark.XGBoostRegressionModel(
+			model.uid,
+			javaBooster
+		) \
+			.setFeaturesCol(model.getFeaturesCol()) \
+			.setPredictionCol(model.getPredictionCol())
+		return javaModel
 	else:
 		raise TypeError()
 

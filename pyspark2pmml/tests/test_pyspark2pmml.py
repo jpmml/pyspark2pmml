@@ -12,7 +12,7 @@ from pyspark.sql import SparkSession
 from pyspark2pmml import PMMLBuilder
 from pyspark2pmml.xgboost import patch_model
 from unittest import SkipTest, TestCase
-from xgboost.spark import SparkXGBClassifier
+from xgboost.spark import SparkXGBClassifier, SparkXGBRegressor
 
 import os
 import tempfile
@@ -98,9 +98,32 @@ class XGBoostTest(PMMLTest):
 		with self.assertRaises(AttributeError):
 			pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
 
-		classifier_model = pipelineModel.stages[-1]
+		classifierModel = pipelineModel.stages[-1]
 
-		patch_model(self.sc, classifier_model)
+		patch_model(self.sc, classifierModel)
+
+		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+
+		pmmlByteArray = pmmlBuilder.buildByteArray()
+
+		pmmlString = pmmlByteArray.decode("utf-8")
+		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">" in pmmlString)
+
+	@requires_pmml_sparkml_xgboost
+	def testAuto(self):
+		df = self.readDataset("Auto")
+
+		formula = RFormula(formula = "mpg ~ .")
+		regressor = SparkXGBRegressor()
+		pipeline = Pipeline(stages = [formula, regressor])
+		pipelineModel = pipeline.fit(df)
+
+		with self.assertRaises(AttributeError):
+			pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+
+		regressorModel = pipelineModel.stages[-1]
+
+		patch_model(self.sc, regressorModel)
 
 		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
 
