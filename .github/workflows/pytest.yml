@@ -12,26 +12,26 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - python: "3.9"
-            pyspark: "3.0.3"
-            jpmml-sparkml-packages: "org.jpmml:pmml-sparkml:2.0.6"
-          - python: "3.9"
-            pyspark: "3.4.4"
-            jpmml-sparkml-packages: "org.jpmml:pmml-sparkml:3.0.0"
-          - python: "3.11"
-            pyspark: "3.5.6"
-            jpmml-sparkml-packages: "org.jpmml:pmml-sparkml:3.1.0"
+          - python: '3.9'
+            pyspark: '3.0.3'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:2.0.6'
+          - python: '3.9'
+            pyspark: '3.4.4'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.0.0'
+          - python: '3.11'
+            pyspark: '3.5.6'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.1.0'
 
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-java@v4
       with:
-        distribution: "zulu"
-        java-version: "11"
+        distribution: 'zulu'
+        java-version: '11'
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.config.python }}
-        cache: "pip"
+        cache: 'pip'
     - run: |
         python -m pip install --upgrade pip
         pip install pytest
