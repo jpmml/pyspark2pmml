@@ -2,6 +2,7 @@ import findspark
 
 findspark.init()
 
+from functools import wraps
 from py4j.java_gateway import JavaObject
 from pyspark.context import SparkContext
 from pyspark.ml import Pipeline
@@ -10,13 +11,21 @@ from pyspark.ml.feature import RFormula
 from pyspark.sql import SparkSession
 from pyspark2pmml import PMMLBuilder
 from pyspark2pmml.xgboost import patch_model
-from unittest import TestCase
+from unittest import SkipTest, TestCase
 from xgboost.spark import SparkXGBClassifier
 
 import os
 import tempfile
 
 jpmml_sparkml_packages = os.environ["JPMML_SPARKML_PACKAGES"]
+
+def requires_pmml_sparkml_xgboost(func):
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		if "pmml-sparkml-xgboost" not in jpmml_sparkml_packages:
+			raise SkipTest()
+		return func(*args, **kwargs)
+	return wrapper
 
 class PMMLTest(TestCase):
 
@@ -42,7 +51,7 @@ class PMMLTest(TestCase):
 
 class PySparkTest(PMMLTest):
 
-	def testWorkflow(self):
+	def testIris(self):
 		df = self.readDataset("Iris")
 		
 		formula = RFormula(formula = "Species ~ .")
@@ -75,13 +84,10 @@ class PySparkTest(PMMLTest):
 
 		self.assertGreater(nonCompactSize, compactSize + 100)
 
-class XGBClassifierTest(PMMLTest):
+class XGBoostTest(PMMLTest):
 
-	def testWorkflow(self):
-
-		if "pmml-sparkml-xgboost" not in jpmml_sparkml_packages:
-			return
-
+	@requires_pmml_sparkml_xgboost
+	def testIris(self):
 		df = self.readDataset("Iris")
 
 		formula = RFormula(formula = "Species ~ .")
@@ -92,9 +98,9 @@ class XGBClassifierTest(PMMLTest):
 		with self.assertRaises(AttributeError):
 			pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
 
-		model = pipelineModel.stages[-1]
+		classifier_model = pipelineModel.stages[-1]
 
-		patch_model(self.sc, model)
+		patch_model(self.sc, classifier_model)
 
 		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
 
