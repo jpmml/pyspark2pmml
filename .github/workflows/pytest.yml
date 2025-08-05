@@ -17,9 +17,11 @@ jobs:
             jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:2.0.6'
           - python: '3.9'
             pyspark: '3.4.4'
+            xgboost: '2.1.4'
             jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.0.0,org.jpmml:pmml-sparkml-xgboost:3.0.0,com.google.guava:guava:33.4.8-jre,ml.dmlc:xgboost4j-spark_2.12:2.1.4'
           - python: '3.11'
             pyspark: '3.5.6'
+            xgboost: '2.1.4'
             jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.1.0,org.jpmml:pmml-sparkml-xgboost:3.1.0,com.google.guava:guava:33.4.8-jre,ml.dmlc:xgboost4j-spark_2.12:2.1.4'
 
     steps:
@@ -36,6 +38,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install pyspark==${{ matrix.config.pyspark }}
+        if [ -n "${{ matrix.config.xgboost }}" ]; then pip install xgboost==${{ matrix.config.xgboost }}; fi
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - env:
         JPMML_SPARKML_PACKAGES: ${{ matrix.config.jpmml-sparkml-packages }}

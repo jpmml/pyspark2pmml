@@ -3,4 +3,3 @@ numpy
 pandas
 pyarrow
 scikit-learn
-xgboost==2.1.4
