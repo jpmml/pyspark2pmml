@@ -2,31 +2,41 @@ import findspark
 
 findspark.init()
 
-import os
-import tempfile
-
-os.environ['PYSPARK_SUBMIT_ARGS'] = ("--master local[2] --jars " + os.environ['JPMML_SPARKML_JAR'] + " pyspark-shell")
-
 from py4j.java_gateway import JavaObject
 from pyspark.context import SparkContext
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
-from pyspark.sql import SQLContext
+from pyspark.sql import SparkSession
 from pyspark2pmml import PMMLBuilder
 from unittest import TestCase
 
+import os
+import tempfile
+
+jpmml_sparkml_packages = os.environ["JPMML_SPARKML_PACKAGES"]
+
 class PMMLTest(TestCase):
 
-	def setUp(self):
-		self.sc = SparkContext()
-		self.sqlContext = SQLContext(self.sc)
+	@classmethod
+	def setUpClass(cls):
+		spark_builder = SparkSession.builder \
+			.appName("PMMLTest") \
+			.master("local[2]")
 
-	def tearDown(self):
-		self.sc.stop()
+		if jpmml_sparkml_packages:
+			spark_builder.config("spark.jars.packages", jpmml_sparkml_packages)
+
+		cls.spark = spark_builder.getOrCreate()
+
+		cls.sc = cls.spark.sparkContext
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.spark.stop()
 
 	def testWorkflow(self):
-		df = self.sqlContext.read.csv(os.path.join(os.path.dirname(__file__), "resources/Iris.csv"), header = True, inferSchema = True)
+		df = self.spark.read.csv(os.path.join(os.path.dirname(__file__), "resources/Iris.csv"), header = True, inferSchema = True)
 		
 		formula = RFormula(formula = "Species ~ .")
 		classifier = DecisionTreeClassifier()
