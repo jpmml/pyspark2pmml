@@ -37,7 +37,7 @@ def toJavaModel(sc, model):
 			.setFeaturesCol(model.getFeaturesCol()) \
 			.setPredictionCol(model.getPredictionCol()) \
 			.setProbabilityCol(model.getProbabilityCol())
-		if num_classes > 2:
+		if javaModel.hasParam("numClass") and num_classes > 2:
 			javaModel.set(javaModel.getParam("numClass"), num_classes)
 		javaModel.set(javaModel.getParam("labelCol"), model.getLabelCol())
 		return javaModel
