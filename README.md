@@ -9,7 +9,7 @@ This package is a thin PySpark wrapper for the [JPMML-SparkML](https://github.co
 
 # Prerequisites #
 
-* Apache Spark 3.0.X, 3.1.X, 3.2.X, 3.3.X, 3.4.X or 3.5.X.
+* Apache Spark 3.0.X, 3.1.X, 3.2.X, 3.3.X, 3.4.X, 3.5.X or 4.0.X.
 * Python 3.6 or newer.
 
 # Installation #
@@ -34,8 +34,9 @@ Active development branches:
 
 | Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
 |----------------------|----------------------|------------------------------|
-| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.0 |
-| 3.5.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.1.0 |
+| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.1 |
+| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.1 |
+| 4.0.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.2.0 |
 
 Stale development branches:
 
