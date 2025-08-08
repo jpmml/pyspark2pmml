@@ -26,16 +26,19 @@ def toJavaModel(sc, model):
 
 	if isinstance(model, SparkXGBClassifierModel):
 		sklearnModel = model._xgb_sklearn_model
+		num_classes = sklearnModel.n_classes_ # XXX
 		javaBooster = toJavaBooster(sc, sklearnModel.get_booster())
 		javaModelClass = sc._jvm.ml.dmlc.xgboost4j.scala.spark.XGBoostClassificationModel
 		javaModel = _construct(javaModelClass, [
 			model.uid,
-			sklearnModel.n_classes_, # XXX
+			num_classes,
 			javaBooster
 		]) \
 			.setFeaturesCol(model.getFeaturesCol()) \
 			.setPredictionCol(model.getPredictionCol()) \
 			.setProbabilityCol(model.getProbabilityCol())
+		if num_classes > 2:
+			javaModel.set(javaModel.getParam("numClass"), num_classes)
 		javaModel.set(javaModel.getParam("labelCol"), model.getLabelCol())
 		return javaModel
 	elif isinstance(model, SparkXGBRegressorModel):
