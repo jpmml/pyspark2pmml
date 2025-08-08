@@ -26,6 +26,7 @@ def toJavaModel(sc, model):
 			.setFeaturesCol(model.getFeaturesCol()) \
 			.setPredictionCol(model.getPredictionCol()) \
 			.setProbabilityCol(model.getProbabilityCol())
+		javaModel.set(javaModel.getParam("labelCol"), model.getLabelCol())
 		return javaModel
 	elif isinstance(model, SparkXGBRegressorModel):
 		sklearnModel = model._xgb_sklearn_model
@@ -36,6 +37,7 @@ def toJavaModel(sc, model):
 		) \
 			.setFeaturesCol(model.getFeaturesCol()) \
 			.setPredictionCol(model.getPredictionCol())
+		javaModel.set(javaModel.getParam("labelCol"), model.getLabelCol())
 		return javaModel
 	else:
 		raise TypeError()
