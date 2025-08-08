@@ -15,14 +15,24 @@ def patch_model(sc, model):
 	model._to_java = types.MethodType(_to_java, model)
 
 def toJavaModel(sc, model):
+	def _construct(javaModelClass, args):
+		# XGBoost 2.X
+		try:
+			javaModel = javaModelClass(*args)
+		# XGBoost 3.X
+		except:
+			javaModel = javaModelClass(*(args + [None]))
+		return javaModel
+
 	if isinstance(model, SparkXGBClassifierModel):
 		sklearnModel = model._xgb_sklearn_model
 		javaBooster = toJavaBooster(sc, sklearnModel.get_booster())
-		javaModel = sc._jvm.ml.dmlc.xgboost4j.scala.spark.XGBoostClassificationModel(
+		javaModelClass = sc._jvm.ml.dmlc.xgboost4j.scala.spark.XGBoostClassificationModel
+		javaModel = _construct(javaModelClass, [
 			model.uid,
 			sklearnModel.n_classes_, # XXX
 			javaBooster
-		) \
+		]) \
 			.setFeaturesCol(model.getFeaturesCol()) \
 			.setPredictionCol(model.getPredictionCol()) \
 			.setProbabilityCol(model.getProbabilityCol())
@@ -31,10 +41,11 @@ def toJavaModel(sc, model):
 	elif isinstance(model, SparkXGBRegressorModel):
 		sklearnModel = model._xgb_sklearn_model
 		javaBooster = toJavaBooster(sc, sklearnModel.get_booster())
-		javaModel = sc._jvm.ml.dmlc.xgboost4j.scala.spark.XGBoostRegressionModel(
+		javaModelClass = sc._jvm.ml.dmlc.xgboost4j.scala.spark.XGBoostRegressionModel
+		javaModel = _construct(javaModelClass, [
 			model.uid,
 			javaBooster
-		) \
+		]) \
 			.setFeaturesCol(model.getFeaturesCol()) \
 			.setPredictionCol(model.getPredictionCol())
 		javaModel.set(javaModel.getParam("labelCol"), model.getLabelCol())
