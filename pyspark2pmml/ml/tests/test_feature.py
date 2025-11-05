@@ -65,11 +65,18 @@ class CategoricalDomainTest(DomainTest):
 		self.assertEqual(["fruit", "color"], obj.getInputCols())
 		self.assertEqual(["pmml_fruit", "pmml_color"], obj.getOutputCols())
 
+		self.assertEqual("asIs", obj.getMissingValueTreatment())
+		self.assertIsNone(obj.getMissingValueReplacement())
+		self.assertEqual("returnInvalid", obj.getInvalidValueTreatment())
+		self.assertIsNone(obj.getInvalidValueReplacement())
+
+		self.assertTrue(obj.getWithData())
+
 	def test_fit_transform(self):
-		domain = self._checked_clone(CategoricalDomain(
-			inputCols = ["fruit", "color"],
-			outputCols = ["pmml_fruit", "pmml_color"]
-		))
+		domain = self._checked_clone(CategoricalDomain() \
+			.setInputCols(["fruit", "color"]) \
+			.setOutputCols(["pmml_fruit", "pmml_color"])
+		)
 
 		schema = StructType([
 			StructField("fruit", StringType(), True),
@@ -108,11 +115,22 @@ class ContinuousDomainTest(DomainTest):
 		self.assertEqual(["width", "height"], obj.getInputCols())
 		self.assertEqual(["pmml_width", "pmml_height"], obj.getOutputCols())
 
+		self.assertEqual("asIs", obj.getMissingValueTreatment())
+		self.assertIsNone(obj.getMissingValueReplacement())
+		self.assertEqual("returnInvalid", obj.getInvalidValueTreatment())
+		self.assertIsNone(obj.getInvalidValueReplacement())
+
+		self.assertTrue(obj.getWithData())
+
+		self.assertEqual("asIs", obj.getOutlierTreatment())
+		self.assertIsNone(obj.getLowValue())
+		self.assertIsNone(obj.getHighValue())
+
 	def test_fit_transform(self):
-		domain = self._checked_clone(ContinuousDomain(
-			inputCols = ["width", "height"],
-			outputCols = ["pmml_width", "pmml_height"]
-		))
+		domain = self._checked_clone(ContinuousDomain() \
+			.setInputCols(["width", "height"]) \
+			.setOutputCols(["pmml_width", "pmml_height"])
+		)
 
 		schema = StructType([
 			StructField("width", DoubleType(), True),

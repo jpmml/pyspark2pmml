@@ -19,29 +19,28 @@ def _create_java_object(java_class_name):
 
 class HasDomainParams(Params):
 
-	inputCols = Param(Params._dummy(), "inputCols", "", typeConverter = TypeConverters.toListString)
-	outputCols = Param(Params._dummy(), "outputCols", "", typeConverter = TypeConverters.toListString)
+	def __init__(self):
+		super().__init__()
 
-	missingValues = Param(Params._dummy(), "missingValues", "")
-	missingValueTreatment = Param(Params._dummy(), "missingValueTreatment", "", typeConverter = TypeConverters.toString)
-	missingValueReplacement = Param(Params._dummy(), "missingValueReplacement", "")
-	invalidValueTreatment = Param(Params._dummy(), "invalidValueTreatment", "", typeConverter = TypeConverters.toString)
-	invalidValueReplacement = Param(Params._dummy(), "invalidValueReplacement", "")
+		self.inputCols = Param(self, "inputCols", "", typeConverter = TypeConverters.toListString)
+		self.outputCols = Param(self, "outputCols", "", typeConverter = TypeConverters.toListString)
 
-	withData = Param(Params._dummy(), "withData", "", typeConverter = TypeConverters.toBoolean)
+		self.missingValues = Param(self, "missingValues", "")
+		self.missingValueTreatment = Param(self, "missingValueTreatment", "", typeConverter = TypeConverters.toString)
+		self.missingValueReplacement = Param(self, "missingValueReplacement", "")
+		self.invalidValueTreatment = Param(self, "invalidValueTreatment", "", typeConverter = TypeConverters.toString)
+		self.invalidValueReplacement = Param(self, "invalidValueReplacement", "")
 
-	@property
-	def params(self):
-		return [
-			self.inputCols,
-			self.outputCols,
-			self.missingValues,
-			self.missingValueTreatment,
-			self.missingValueReplacement,
-			self.invalidValueTreatment,
-			self.invalidValueReplacement,
-			self.withData
-		]
+		self._setDefault(
+			missingValueTreatment = "asIs",
+			missingValueReplacement = None,
+			invalidValueTreatment = "returnInvalid",
+			invalidValueReplacement = None
+		)
+
+		self.withData = Param(self, "withData", "", typeConverter = TypeConverters.toBoolean)
+
+		self._setDefault(withData = True)
 
 	def getInputCols(self):
 		return self.getOrDefault(self.inputCols)
@@ -93,13 +92,10 @@ class HasDomainParams(Params):
 
 class HasCategoricalDomainParams(HasDomainParams):
 
-	dataValues = Param(Params._dummy(), "dataValues", "")
+	def __init__(self):
+		super().__init__()
 
-	@property
-	def params(self):
-		return super().params + [
-			self.dataValues
-		]
+		self.dataValues = Param(self, "dataValues", "")
 
 	def getDataValues(self):
 		return self.getOrDefault(self.dataValues)
@@ -109,20 +105,20 @@ class HasCategoricalDomainParams(HasDomainParams):
 
 class HasContinuousDomainParams(HasDomainParams):
 
-	outlierTreatment = Param(Params._dummy(), "outlierTreatment", "", typeConverter = TypeConverters.toString)
-	lowValue = Param(Params._dummy(), "lowValue", "")
-	highValue = Param(Params._dummy(), "highValue", "")
+	def __init__(self):
+		super().__init__()
 
-	dataRanges = Param(Params._dummy(), "dataRanges", "")
+		self.outlierTreatment = Param(self, "outlierTreatment", "", typeConverter = TypeConverters.toString)
+		self.lowValue = Param(self, "lowValue", "")
+		self.highValue = Param(self, "highValue", "")
 
-	@property
-	def params(self):
-		return super().params + [
-			self.outlierTreatment,
-			self.lowValue,
-			self.highValue,
-			self.dataRanges
-		]
+		self._setDefault(
+			outlierTreatment = "asIs",
+			lowValue = None,
+			highValue = None
+		)
+
+		self.dataRanges = Param(self, "dataRanges", "")
 
 	def getOutlierTreatment(self):
 		return self.getOrDefault(self.outlierTreatment)
@@ -152,49 +148,21 @@ class Domain(JavaEstimator["DomainModel"], JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.Domain"
 
-	def __init__(self, *, java_obj, inputCols = None, outputCols = None, missingValues = None, missingValueTreatment = "asIs", missingValueReplacement = None, invalidValueTreatment = "returnInvalid", invalidValueReplacement = None, withData = True):
-		super().__init__(java_obj = java_obj)
-
-		if inputCols is not None:
-			self.setInputCols(inputCols)
-		if outputCols is not None:
-			self.setOutputCols(outputCols)
-
-		if missingValues is not None:
-			self.setMissingValues(missingValues)
-
-		if missingValueTreatment != "asIs":
-			self.setMissingValueTreatment(missingValueTreatment)
-		if missingValueReplacement is not None:
-			self.setMissingValueReplacement(missingValueReplacement)
-
-		if invalidValueTreatment != "returnInvalid":
-			self.setInvalidValueTreatment(invalidValueTreatment)
-		if invalidValueReplacement is not None:
-			self.setInvalidValueReplacement(invalidValueReplacement)
-
-		if withData != True:
-			self.setWithData(withData)
-
 class DomainModel(JavaTransformer, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.DomainModel"
-
-	def __init__(self, java_obj):
-		super().__init__(java_obj = java_obj)
 
 class CategoricalDomain(Domain, HasCategoricalDomainParams):
 
 	_java_class_name = "org.jpmml.sparkml.feature.CategoricalDomain"
 
-	def __init__(self, *, java_obj = None, inputCols = None, outputCols = None, missingValues = None, missingValueTreatment = "asIs", missingValueReplacement = None, invalidValueTreatment = "returnInvalid", invalidValueReplacement = None, withData = True, dataValues = None):
+	def __init__(self, *, java_obj = None, **kwargs):
 		if java_obj is None:
 			java_obj = _create_java_object(CategoricalDomain._java_class_name)
 
-		super().__init__(java_obj = java_obj, inputCols = inputCols, outputCols = outputCols, missingValues = missingValues, missingValueTreatment = missingValueTreatment, missingValueReplacement = missingValueReplacement, invalidValueTreatment = invalidValueTreatment, invalidValueReplacement = invalidValueReplacement, withData = withData)
+		super().__init__(java_obj = java_obj)
 
-		if dataValues is not None:
-			self.setDataValues(dataValues)
+		self._set(**kwargs)
 
 	def _create_model(self, java_obj):
 		return CategoricalDomainModel(java_obj)
@@ -207,9 +175,6 @@ class CategoricalDomainModel(DomainModel, HasCategoricalDomainParams):
 
 	_java_class_name = "org.jpmml.sparkml.feature.CategoricalDomainModel"
 
-	def __init__(self, java_obj):
-		super().__init__(java_obj)
-
 	@classmethod
 	def read(cls):
 		return _JavaReader(cls, CategoricalDomainModel._java_class_name)
@@ -218,22 +183,14 @@ class ContinuousDomain(Domain, HasContinuousDomainParams):
 
 	_java_class_name = "org.jpmml.sparkml.feature.ContinuousDomain"
 
-	def __init__(self, *, java_obj = None, inputCols = None, outputCols = None, missingValues = None, missingValueTreatment = "asIs", missingValueReplacement = None, invalidValueTreatment = "returnInvalid", invalidValueReplacement = None, withData = True, outlierTreatment = "asIs", lowValue = None, highValue = None, dataRanges = None):
+	def __init__(self, *, java_obj = None, **kwargs):
 
 		if java_obj is None:
 			java_obj = _create_java_object(ContinuousDomain._java_class_name)
 
-		super().__init__(java_obj = java_obj, inputCols = inputCols, outputCols = outputCols, missingValues = missingValues, missingValueTreatment = missingValueTreatment, missingValueReplacement = missingValueReplacement, invalidValueTreatment = invalidValueTreatment, invalidValueReplacement = invalidValueReplacement, withData = withData)
+		super().__init__(java_obj = java_obj)
 
-		if outlierTreatment != "asIs":
-			self.setOutlierTreatment(outlierTreatment)
-		if lowValue is not None:
-			self.setLowValue(lowValue)
-		if highValue is not None:
-			self.setHighValue(highValue)
-
-		if dataRanges is not None:
-			self.setDataRanges(dataRanges)
+		self._set(**kwargs)
 
 	def _create_model(self, java_obj):
 		return ContinuousDomainModel(java_obj)
@@ -245,9 +202,6 @@ class ContinuousDomain(Domain, HasContinuousDomainParams):
 class ContinuousDomainModel(DomainModel, HasContinuousDomainParams):
 
 	_java_class_name = "org.jpmml.sparkml.feature.ContinuousDomainModel"
-
-	def __init__(self, java_obj):
-		super().__init__(java_obj)
 
 	@classmethod
 	def read(cls):
