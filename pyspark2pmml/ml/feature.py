@@ -144,7 +144,7 @@ class HasContinuousDomainParams(HasDomainParams):
 	def setDataRanges(self, value):
 		return self._set(dataRanges = value)
 
-class Domain(JavaEstimator["DomainModel"], JavaMLWritable):
+class Domain(JavaEstimator, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.Domain"
 
