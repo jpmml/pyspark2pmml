@@ -1,6 +1,5 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
-from pyspark.testing import assertDataFrameEqual
 from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain
 from tempfile import TemporaryDirectory
 from unittest import TestCase
@@ -34,11 +33,6 @@ class DomainTest(TestCase):
 		self._check(obj)
 
 		return obj
-
-	def assertDatasetEqual(self, expected_schema, expected_rows, actual_df):
-		expected_df = self.spark.createDataFrame(expected_rows, expected_schema)
-
-		assertDataFrameEqual(expected_df, actual_df)
 
 	@classmethod
 	def setUpClass(cls):
@@ -100,12 +94,7 @@ class CategoricalDomainTest(DomainTest):
 		transformed_df = domain_model.transform(df) \
 			.select("pmml_fruit", "pmml_color")
 
-		expected_schema = StructType([
-			StructField("pmml_fruit", StringType(), True),
-			StructField("pmml_color", StringType(), True)
-		])
-
-		self.assertDatasetEqual(expected_schema, rows, transformed_df)
+		self.assertEqual(rows, transformed_df.collect())
 
 class ContinuousDomainTest(DomainTest):
 
@@ -153,9 +142,4 @@ class ContinuousDomainTest(DomainTest):
 		transformed_df = domain_model.transform(df) \
 			.select("pmml_width", "pmml_height")
 
-		expected_schema = StructType([
-			StructField("pmml_width", DoubleType(), True),
-			StructField("pmml_height", DoubleType(), True)
-		])
-
-		self.assertDatasetEqual(expected_schema, rows, transformed_df)
+		self.assertEqual(rows, transformed_df.collect())
