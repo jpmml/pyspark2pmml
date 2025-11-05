@@ -2,9 +2,17 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
 from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain
 from tempfile import TemporaryDirectory
-from unittest import TestCase
+from unittest import skipIf, TestCase
 
 import os
+import pyspark
+
+_SPARK_VERSION = tuple(map(int, pyspark.__version__.split(".")))
+
+def _require_spark_version(major, minor, patch = 0):
+	return _SPARK_VERSION >= (major, minor, patch)
+
+skip_if_legacy = skipIf(not _require_spark_version(3, 4), "Legacy Apache Spark version")
 
 jpmml_sparkml_packages = os.environ["JPMML_SPARKML_PACKAGES"]
 
@@ -21,6 +29,7 @@ def _clone(obj):
 
 		return cloned_obj
 
+@skip_if_legacy
 class DomainTest(TestCase):
 
 	def _check(self, obj):
