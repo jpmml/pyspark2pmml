@@ -68,19 +68,21 @@ class CategoricalDomainTest(DomainTest):
 		self.assertEqual(["fruit", "color"], obj.getInputCols())
 		self.assertEqual(["pmml_fruit", "pmml_color"], obj.getOutputCols())
 
-		self.assertEqual("asIs", obj.getMissingValueTreatment())
-		self.assertIsNone(obj.getMissingValueReplacement())
-		self.assertEqual("returnInvalid", obj.getInvalidValueTreatment())
+		self.assertEqual("asValue", obj.getMissingValueTreatment())
+		self.assertEqual("(other)", obj.getMissingValueReplacement())
+		self.assertEqual("asMissing", obj.getInvalidValueTreatment())
 		self.assertIsNone(obj.getInvalidValueReplacement())
 
 		self.assertTrue(obj.getWithData())
 
-	def test_fit_transform(self):
-		domain = self._checked_clone(CategoricalDomain() \
-			.setInputCols(["fruit", "color"]) \
-			.setOutputCols(["pmml_fruit", "pmml_color"])
-		)
+		dataValues = {
+			"fruit" : ["apple", "orange"],
+			"color" : ["green", "yellow", "red"]
+		}
 
+		self.assertEqual(dataValues, obj.getDataValues())
+
+	def test_fit_transform(self):
 		schema = StructType([
 			StructField("fruit", StringType(), True),
 			StructField("color", StringType(), True)
@@ -96,6 +98,20 @@ class CategoricalDomainTest(DomainTest):
 			(None, "pink")
 		]
 
+		dataValues = {
+			"fruit" : ["apple", "orange"],
+			"color" : ["green", "yellow", "red"]
+		}
+
+		domain = self._checked_clone(CategoricalDomain() \
+			.setInputCols(["fruit", "color"]) \
+			.setOutputCols(["pmml_fruit", "pmml_color"]) \
+			.setMissingValueTreatment("asValue") \
+			.setMissingValueReplacement("(other)") \
+			.setInvalidValueTreatment("asMissing")
+			.setDataValues(dataValues)
+		)
+
 		df = self.spark.createDataFrame(rows, schema)
 
 		domain_model = self._checked_clone(domain.fit(df))
@@ -103,7 +119,17 @@ class CategoricalDomainTest(DomainTest):
 		transformed_df = domain_model.transform(df) \
 			.select("pmml_fruit", "pmml_color")
 
-		self.assertEqual(rows, transformed_df.collect())
+		expected_rows = [
+			("apple", "red"),
+			("apple", "(other)"),
+			("orange", "(other)"),
+			("(other)", "yellow"),
+			("(other)", "green"),
+			("apple", "green"),
+			("(other)", "(other)")
+		]
+
+		self.assertEqual(expected_rows, transformed_df.collect())
 
 class ContinuousDomainTest(DomainTest):
 
@@ -113,23 +139,25 @@ class ContinuousDomainTest(DomainTest):
 		self.assertEqual(["width", "height"], obj.getInputCols())
 		self.assertEqual(["pmml_width", "pmml_height"], obj.getOutputCols())
 
-		self.assertEqual("asIs", obj.getMissingValueTreatment())
-		self.assertIsNone(obj.getMissingValueReplacement())
-		self.assertEqual("returnInvalid", obj.getInvalidValueTreatment())
+		self.assertEqual("asValue", obj.getMissingValueTreatment())
+		self.assertEqual(-1, obj.getMissingValueReplacement())
+		self.assertEqual("asMissing", obj.getInvalidValueTreatment())
 		self.assertIsNone(obj.getInvalidValueReplacement())
 
 		self.assertTrue(obj.getWithData())
 
-		self.assertEqual("asIs", obj.getOutlierTreatment())
-		self.assertIsNone(obj.getLowValue())
-		self.assertIsNone(obj.getHighValue())
+		self.assertEqual("asMissingValues", obj.getOutlierTreatment())
+		self.assertEqual(20.0, obj.getLowValue())
+		self.assertEqual(80.0, obj.getHighValue())
+
+		dataRanges = {
+			"width" : [0, 100],
+			"height" : [0, 100]
+		}
+
+		self.assertEqual(dataRanges, obj.getDataRanges())
 
 	def test_fit_transform(self):
-		domain = self._checked_clone(ContinuousDomain() \
-			.setInputCols(["width", "height"]) \
-			.setOutputCols(["pmml_width", "pmml_height"])
-		)
-
 		schema = StructType([
 			StructField("width", DoubleType(), True),
 			StructField("height", DoubleType(), True)
@@ -144,6 +172,23 @@ class ContinuousDomainTest(DomainTest):
 			(150.0, 50.0)
 		]
 
+		dataRanges = {
+			"width" : [0, 100],
+			"height" : [0, 100]
+		}
+
+		domain = self._checked_clone(ContinuousDomain() \
+			.setInputCols(["width", "height"]) \
+			.setOutputCols(["pmml_width", "pmml_height"]) \
+			.setMissingValueTreatment("asValue") \
+			.setMissingValueReplacement(-1) \
+			.setInvalidValueTreatment("asMissing") \
+			.setOutlierTreatment("asMissingValues") \
+			.setLowValue(20.0) \
+			.setHighValue(80.0) \
+			.setDataRanges(dataRanges)
+		)
+
 		df = self.spark.createDataFrame(rows, schema)
 
 		domain_model = self._checked_clone(domain.fit(df))
@@ -151,4 +196,13 @@ class ContinuousDomainTest(DomainTest):
 		transformed_df = domain_model.transform(df) \
 			.select("pmml_width", "pmml_height")
 
-		self.assertEqual(rows, transformed_df.collect())
+		expected_rows = [
+			(20.0, -1),
+			(-1, 20.0),
+			(-1, -1),
+			# XXX
+			#(10.0, -1),
+			(-1, 50.0)
+		]
+
+		self.assertEqual(expected_rows, transformed_df.collect())

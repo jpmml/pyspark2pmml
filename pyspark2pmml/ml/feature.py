@@ -2,6 +2,7 @@ from pyspark.ml.param import Param, Params, TypeConverters
 from pyspark.ml.util import JavaMLWritable, MLReader
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
 from pyspark.sql import SparkSession
+from py4j.java_gateway import JavaObject
 
 _JVM = None
 
@@ -14,10 +15,77 @@ def _jvm():
 		_JVM = spark._jvm
 	return _JVM
 
+_GATEWAY = None
+
+def _gateway():
+	global _GATEWAY
+	if _GATEWAY is None:
+		spark = SparkSession.getActiveSession()
+		if spark is None:
+			raise RuntimeError("Apache Spark session not found")
+		_GATEWAY = spark.sparkContext._gateway
+	return _GATEWAY
+
 def _create_java_object(java_class_name):
 	return getattr(_jvm(), java_class_name)()
 
+def _to_objectarray(py_values):
+	jvm = _jvm()
+	return jvm.java.util.ArrayList(list(py_values)).toArray()
+
+def _to_numberarray(py_values):
+	gateway = _gateway()
+	array = gateway.new_array(gateway.jvm.java.lang.Number, len(py_values))
+	for idx, py_value in enumerate(py_values):
+		array[idx] = py_value
+	return array
+
+def _from_objectarray(java_values):
+	return list(java_values)
+
+def _to_array_map(py_map, to_array_func):
+	jvm = _jvm()
+	java_map = jvm.java.util.LinkedHashMap()
+	for k, py_value in py_map.items():
+		java_value = to_array_func(py_value)
+		java_map.put(k, java_value)
+	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
+	return scala_map
+
+def _to_objectarray_map(py_map):
+	return _to_array_map(py_map, _to_objectarray)
+
+def _to_numberarray_map(py_map):
+	return _to_array_map(py_map, _to_numberarray)
+
+def _from_array_map(scala_map):
+	jvm = _jvm()
+	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toJavaMap(scala_map)
+	py_map = dict()
+	entryIt = java_map.entrySet().iterator()
+	while entryIt.hasNext():
+		entry = entryIt.next()
+		py_map[entry.getKey()] = _from_objectarray(entry.getValue())
+	return py_map
+
+def _from_objectarray_map(scala_map):
+	return _from_array_map(scala_map)
+
+def _from_numberarray_map(scala_map):
+	return _from_array_map(scala_map)
+
 class HasDomainParams(Params):
+
+	_param_formatters = {
+		"missingValues" : _to_objectarray,
+		"dataRanges" : _to_numberarray_map,
+		"dataValues" : _to_objectarray_map
+	}
+	_param_parsers = {
+		"missingValues" : _from_objectarray,
+		"dataRanges" : _from_numberarray_map,
+		"dataValues" : _from_objectarray_map
+	}
 
 	def __init__(self):
 		super().__init__()
@@ -32,6 +100,7 @@ class HasDomainParams(Params):
 		self.invalidValueReplacement = Param(self, "invalidValueReplacement", "")
 
 		self._setDefault(
+			missingValues = [],
 			missingValueTreatment = "asIs",
 			missingValueReplacement = None,
 			invalidValueTreatment = "returnInvalid",
@@ -144,11 +213,34 @@ class HasContinuousDomainParams(HasDomainParams):
 	def setDataRanges(self, value):
 		return self._set(dataRanges = value)
 
-class Domain(JavaEstimator, JavaMLWritable):
+class DomainParamsMixin:
+
+	def _make_java_param_pair(self, param, value):
+		param_formatter = HasDomainParams._param_formatters.get(param.name, None)
+		if param_formatter is not None and value is not None:
+			java_param = self._java_obj.getParam(param.name)
+			return java_param.w(param_formatter(value))
+		return super()._make_java_param_pair(param, value)
+
+	def _transfer_params_to_java(self):
+		super()._transfer_params_to_java()
+
+	def _transfer_params_from_java(self):
+		super()._transfer_params_from_java()
+		for param in self.params:
+			param_parser = HasDomainParams._param_parsers.get(param.name, None)
+			if param_parser is None:
+				continue
+			if param in self._paramMap and self._paramMap[param] is not None:
+				self._paramMap[param] = param_parser(self._paramMap[param])
+			if param in self._defaultParamMap and self._defaultParamMap[param] is not None:
+				self._defaultParamMap[param] = param_parser(self._defaultParamMap[param])
+
+class Domain(DomainParamsMixin, JavaEstimator, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.Domain"
 
-class DomainModel(JavaTransformer, JavaMLWritable):
+class DomainModel(DomainParamsMixin, JavaTransformer, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.DomainModel"
 
