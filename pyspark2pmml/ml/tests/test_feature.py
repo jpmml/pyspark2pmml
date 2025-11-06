@@ -1,11 +1,14 @@
+from pyspark.ml import Pipeline
+from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
 from pyspark.sql import SparkSession
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
-from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, SparseToDenseTransformer
+from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, SparseToDenseTransformer
 from tempfile import TemporaryDirectory
 from unittest import skipIf, TestCase
 
 import os
+import math
 import pyspark
 
 _SPARK_VERSION = tuple(map(int, pyspark.__version__.split(".")))
@@ -29,6 +32,15 @@ def _clone(obj):
 			.load(tmpDir)
 
 		return cloned_obj
+
+def _escape_df(df):
+	def _escape_row(row):
+		def _escape_value(value):
+			if isinstance(value, float) and math.isnan(value):
+				return "NaN"
+			return value
+		return tuple([_escape_value(element) for element in row])
+	return [_escape_row(row) for row in df]
 
 class SparkTest(TestCase):
 
@@ -102,6 +114,8 @@ class CategoricalDomainTest(DomainTest):
 			(None, "pink")
 		]
 
+		df = self.spark.createDataFrame(rows, schema)
+
 		dataValues = {
 			"fruit" : ["apple", "orange"],
 			"color" : ["green", "yellow", "red"]
@@ -115,8 +129,6 @@ class CategoricalDomainTest(DomainTest):
 			.setInvalidValueTreatment("asMissing")
 			.setDataValues(dataValues)
 		)
-
-		df = self.spark.createDataFrame(rows, schema)
 
 		domain_model = self._checked_clone(domain.fit(df))
 
@@ -171,10 +183,11 @@ class ContinuousDomainTest(DomainTest):
 			(20.0, 10.0),
 			(None, 20.0),
 			(-999.0, None),
-			# XXX
-			#(10.0, float("NaN")),
+			(10.0, float("NaN")),
 			(150.0, 50.0)
 		]
+
+		df = self.spark.createDataFrame(rows, schema)
 
 		dataRanges = {
 			"width" : [0, 100],
@@ -193,8 +206,6 @@ class ContinuousDomainTest(DomainTest):
 			.setDataRanges(dataRanges)
 		)
 
-		df = self.spark.createDataFrame(rows, schema)
-
 		domain_model = self._checked_clone(domain.fit(df))
 
 		transformed_df = domain_model.transform(df) \
@@ -204,12 +215,85 @@ class ContinuousDomainTest(DomainTest):
 			(20.0, -1),
 			(-1, 20.0),
 			(-1, -1),
-			# XXX
-			#(10.0, -1),
+			(-1, -1),
 			(-1, 50.0)
 		]
 
 		self.assertEqual(expected_rows, transformed_df.collect())
+
+class InvalidCategoryTransformerTest(SparkTest):
+
+	def test_fit_transform(self):
+		schema = StructType([
+			StructField("fruit", StringType(), True),
+			StructField("color", StringType(), True),
+			StructField("rating", DoubleType(), False)
+		])
+
+		rows = [
+			("apple", "red", 2.0),
+			("orange", "orange", 3.0),
+			("banana", "yellow", 3.0),
+			("banana", "green", 1.0),
+			("apple", "green", 2.0),
+		]
+
+		df = self.spark.createDataFrame(rows, schema)
+
+		indexer = StringIndexer() \
+			.setStringOrderType("alphabetAsc") \
+			.setInputCols(["fruit", "color", "rating"]) \
+			.setOutputCols(["fruitIdx", "colorIdx", "ratingIdx"]) \
+			.setHandleInvalid("keep")
+
+		multi_transformer = self._checked_clone(InvalidCategoryTransformer() \
+			.setInputCols(["fruitIdx", "colorIdx"]) \
+			.setOutputCols(["fruitIdxTransformed", "colorIdxTransformed"])
+		)
+
+		single_transformer = self._checked_clone(InvalidCategoryTransformer() \
+			.setInputCol("ratingIdx") \
+			.setOutputCol("ratingIdxTransformed")
+		)
+
+		pipeline = Pipeline(stages = [indexer, multi_transformer, single_transformer])
+
+		pipeline_model = pipeline.fit(df)
+
+		transformed_df = pipeline_model.transform(df)
+
+		def _get_categories(col):
+			field = transformed_df.schema[col]
+			metadata = field.metadata
+			ml_attr = metadata.get("ml_attr", {})
+			return ml_attr.get("vals")
+
+		self.assertEqual(["apple", "banana", "orange", "__unknown"], _get_categories("fruitIdx"))
+		self.assertEqual(["green", "orange", "red", "yellow", "__unknown"], _get_categories("colorIdx"))
+		self.assertEqual(["1.0", "2.0", "3.0", "__unknown"], _get_categories("ratingIdx"))
+
+		self.assertEqual(["apple", "banana", "orange"], _get_categories("fruitIdxTransformed"))
+		self.assertEqual(["green", "orange", "red", "yellow"], _get_categories("colorIdxTransformed"))
+		self.assertEqual(["1.0", "2.0", "3.0"], _get_categories("ratingIdxTransformed"))
+
+		test_rows = [
+			(None, "yellow", 0.0),
+			("apple", "", 1.0),
+			("banana", "red", float("NaN"))
+		]
+
+		test_df = self.spark.createDataFrame(test_rows, schema)
+
+		transformed_test_df = pipeline_model.transform(test_df) \
+			.select("fruitIdxTransformed", "colorIdxTransformed", "ratingIdxTransformed")
+
+		expected_test_rows = [
+			(float("NaN"), 3.0, float("NaN")),
+			(0.0, float("NaN"), 0.0),
+			(1.0, 2.0, float("NaN"))
+		]
+
+		self.assertEqual(_escape_df(expected_test_rows), _escape_df(transformed_test_df.collect()))
 
 class SparseToDenseTransformerTest(SparkTest):
 
@@ -224,13 +308,13 @@ class SparseToDenseTransformerTest(SparkTest):
 			(Vectors.sparse(3, [0], [1.0]), )
 		]
 
+		df = self.spark.createDataFrame(rows, schema)
+
 		transformer = self._checked_clone(SparseToDenseTransformer() \
 			.setInputCol("features") \
 			.setOutputCol("denseFeatures")
 		)
 
-		df = self.spark.createDataFrame(rows, schema)
-		
 		transformed_df = transformer.transform(df) \
 			.select("denseFeatures")
 

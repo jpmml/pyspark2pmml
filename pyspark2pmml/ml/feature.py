@@ -1,5 +1,5 @@
 from pyspark.ml.param import Param, Params, TypeConverters
-from pyspark.ml.param.shared import HasInputCol, HasOutputCol
+from pyspark.ml.param.shared import HasInputCol, HasInputCols, HasOutputCol, HasOutputCols
 from pyspark.ml.util import JavaMLWritable, MLReader
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
 from pyspark.sql import SparkSession
@@ -252,9 +252,7 @@ class CategoricalDomain(Domain, HasCategoricalDomainParams):
 	def __init__(self, *, java_obj = None, **kwargs):
 		if java_obj is None:
 			java_obj = _create_java_object(CategoricalDomain._java_class_name)
-
 		super().__init__(java_obj = java_obj)
-
 		self._set(**kwargs)
 
 	def _create_model(self, java_obj):
@@ -277,12 +275,9 @@ class ContinuousDomain(Domain, HasContinuousDomainParams):
 	_java_class_name = "org.jpmml.sparkml.feature.ContinuousDomain"
 
 	def __init__(self, *, java_obj = None, **kwargs):
-
 		if java_obj is None:
 			java_obj = _create_java_object(ContinuousDomain._java_class_name)
-
 		super().__init__(java_obj = java_obj)
-
 		self._set(**kwargs)
 
 	def _create_model(self, java_obj):
@@ -300,17 +295,40 @@ class ContinuousDomainModel(DomainModel, HasContinuousDomainParams):
 	def read(cls):
 		return _JavaReader(cls, ContinuousDomainModel._java_class_name)
 
+class InvalidCategoryTransformer(JavaTransformer, HasInputCol, HasInputCols, HasOutputCol, HasOutputCols, JavaMLWritable):
+
+	_java_class_name = "org.jpmml.sparkml.feature.InvalidCategoryTransformer"
+
+	def __init__(self, *, java_obj = None, **kwargs):
+		if java_obj is None:
+			java_obj = _create_java_object(InvalidCategoryTransformer._java_class_name)
+		super().__init__(java_obj = java_obj)
+		self._set(**kwargs)
+
+	def setInputCol(self, value):
+		return self._set(inputCol = value)
+
+	def setInputCols(self, value):
+		return self._set(inputCols = value)
+
+	def setOutputCol(self, value):
+		return self._set(outputCol = value)
+
+	def setOutputCols(self, value):
+		return self._set(outputCols = value)
+
+	@classmethod
+	def read(cls):
+		return _JavaReader(cls, InvalidCategoryTransformer._java_class_name)
+
 class SparseToDenseTransformer(JavaTransformer, HasInputCol, HasOutputCol, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.SparseToDenseTransformer"
 
 	def __init__(self, *, java_obj = None, **kwargs):
-
 		if java_obj is None:
 			java_obj = _create_java_object(SparseToDenseTransformer._java_class_name)
-
 		super().__init__(java_obj = java_obj)
-
 		self._set(**kwargs)
 
 	def setInputCol(self, value):
