@@ -1,6 +1,7 @@
+from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
 from pyspark.sql import SparkSession
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
-from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain
+from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, SparseToDenseTransformer
 from tempfile import TemporaryDirectory
 from unittest import skipIf, TestCase
 
@@ -29,8 +30,7 @@ def _clone(obj):
 
 		return cloned_obj
 
-@skip_if_legacy
-class DomainTest(TestCase):
+class SparkTest(TestCase):
 
 	def _check(self, obj):
 		return obj
@@ -59,6 +59,10 @@ class DomainTest(TestCase):
 	@classmethod
 	def tearDownClass(cls):
 		cls.spark.stop()
+
+@skip_if_legacy
+class DomainTest(SparkTest):
+	pass
 
 class CategoricalDomainTest(DomainTest):
 
@@ -206,3 +210,40 @@ class ContinuousDomainTest(DomainTest):
 		]
 
 		self.assertEqual(expected_rows, transformed_df.collect())
+
+class SparseToDenseTransformerTest(SparkTest):
+
+	def test_fit_transform(self):
+		schema = StructType([
+			StructField("features", VectorUDT(), True)
+		])
+
+		rows = [
+			(Vectors.sparse(3, [1], [1.0]), ),
+			(Vectors.dense([0.0, 0.0, 1.0]), ),
+			(Vectors.sparse(3, [0], [1.0]), )
+		]
+
+		transformer = self._checked_clone(SparseToDenseTransformer() \
+			.setInputCol("features") \
+			.setOutputCol("denseFeatures")
+		)
+
+		df = self.spark.createDataFrame(rows, schema)
+		
+		transformed_df = transformer.transform(df) \
+			.select("denseFeatures")
+
+		expected_rows = [
+			(Vectors.dense([0.0, 1.0, 0.0]), ),
+			(Vectors.dense([0.0, 0.0, 1.0]), ),
+			(Vectors.dense([1.0, 0.0, 0.0]), )
+		]
+
+		actual_rows = transformed_df.collect()
+
+		self.assertEqual(expected_rows, actual_rows)
+
+		vectors = [actual_row.denseFeatures for actual_row in actual_rows]
+		for vector in vectors:
+			self.assertIsInstance(vector, DenseVector)

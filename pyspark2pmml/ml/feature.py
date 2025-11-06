@@ -1,4 +1,5 @@
 from pyspark.ml.param import Param, Params, TypeConverters
+from pyspark.ml.param.shared import HasInputCol, HasOutputCol
 from pyspark.ml.util import JavaMLWritable, MLReader
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
 from pyspark.sql import SparkSession
@@ -298,6 +299,29 @@ class ContinuousDomainModel(DomainModel, HasContinuousDomainParams):
 	@classmethod
 	def read(cls):
 		return _JavaReader(cls, ContinuousDomainModel._java_class_name)
+
+class SparseToDenseTransformer(JavaTransformer, HasInputCol, HasOutputCol, JavaMLWritable):
+
+	_java_class_name = "org.jpmml.sparkml.feature.SparseToDenseTransformer"
+
+	def __init__(self, *, java_obj = None, **kwargs):
+
+		if java_obj is None:
+			java_obj = _create_java_object(SparseToDenseTransformer._java_class_name)
+
+		super().__init__(java_obj = java_obj)
+
+		self._set(**kwargs)
+
+	def setInputCol(self, value):
+		return self._set(inputCol = value)
+
+	def setOutputCol(self, value):
+		return self._set(outputCol = value)
+
+	@classmethod
+	def read(cls):
+		return _JavaReader(cls, SparseToDenseTransformer._java_class_name)
 
 class _JavaReader(MLReader):
 
