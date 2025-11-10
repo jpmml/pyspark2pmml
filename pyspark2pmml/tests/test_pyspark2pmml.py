@@ -15,12 +15,23 @@ from unittest import SkipTest, TestCase
 import os
 import tempfile
 
-jpmml_sparkml_packages = os.environ["JPMML_SPARKML_PACKAGES"]
+jpmml_sparkml_jars = os.environ.get("JPMML_SPARKML_JARS", "")
+jpmml_sparkml_packages = os.environ.get("JPMML_SPARKML_PACKAGES", "")
+
+if jpmml_sparkml_jars or jpmml_sparkml_packages:
+	submit_args = []
+	if jpmml_sparkml_jars:
+		submit_args.append("--jars {}".format(jpmml_sparkml_jars))
+	if jpmml_sparkml_packages:
+		submit_args.append("--packages {}".format(jpmml_sparkml_packages))
+	submit_args.append("pyspark-shell")
+
+	os.environ['PYSPARK_SUBMIT_ARGS'] = " ".join(submit_args)
 
 def requires_pmml_sparkml_xgboost(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		if "pmml-sparkml-xgboost" not in jpmml_sparkml_packages:
+		if "pmml-sparkml-example-executable" not in jpmml_sparkml_jars and "pmml-sparkml-xgboost" not in jpmml_sparkml_packages:
 			raise SkipTest()
 		return func(*args, **kwargs)
 	return wrapper
@@ -32,9 +43,6 @@ class PMMLTest(TestCase):
 		spark_builder = SparkSession.builder \
 			.appName("PMMLTest") \
 			.master("local[2]")
-
-		if jpmml_sparkml_packages:
-			spark_builder.config("spark.jars.packages", jpmml_sparkml_packages)
 
 		cls.spark = spark_builder.getOrCreate()
 
