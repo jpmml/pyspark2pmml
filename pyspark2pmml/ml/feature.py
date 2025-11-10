@@ -16,17 +16,6 @@ def _jvm():
 		_JVM = spark._jvm
 	return _JVM
 
-_GATEWAY = None
-
-def _gateway():
-	global _GATEWAY
-	if _GATEWAY is None:
-		spark = SparkSession.getActiveSession()
-		if spark is None:
-			raise RuntimeError("Apache Spark session not found")
-		_GATEWAY = spark.sparkContext._gateway
-	return _GATEWAY
-
 def _create_java_object(java_class_name):
 	return getattr(_jvm(), java_class_name)()
 
@@ -34,39 +23,25 @@ def _to_objectarray(py_values):
 	jvm = _jvm()
 	return jvm.java.util.ArrayList(list(py_values)).toArray()
 
-def _to_numberarray(py_values):
-	gateway = _gateway()
-	array = gateway.new_array(gateway.jvm.java.lang.Number, len(py_values))
-	for idx, py_value in enumerate(py_values):
-		array[idx] = py_value
-	return array
-
 def _from_objectarray(java_values):
 	return list(java_values)
 
-def _to_array_map(py_map, to_array_func):
+def _to_objectarray_map(py_map):
 	jvm = _jvm()
-	java_map = jvm.java.util.LinkedHashMap()
-	for k, py_value in py_map.items():
-		java_value = to_array_func(py_value)
-		java_map.put(k, java_value)
+	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toObjectArrayMap(py_map)
 	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
 	return scala_map
 
-def _to_objectarray_map(py_map):
-	return _to_array_map(py_map, _to_objectarray)
-
 def _to_numberarray_map(py_map):
-	return _to_array_map(py_map, _to_numberarray)
+	jvm = _jvm()
+	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toNumberArrayMap(py_map)
+	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
+	return scala_map
 
 def _from_array_map(scala_map):
 	jvm = _jvm()
 	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toJavaMap(scala_map)
-	py_map = dict()
-	entryIt = java_map.entrySet().iterator()
-	while entryIt.hasNext():
-		entry = entryIt.next()
-		py_map[entry.getKey()] = _from_objectarray(entry.getValue())
+	py_map = {k : list(v) for k, v in jvm.org.jpmml.sparkml.feature.DomainUtil.toListMap(java_map).items()}
 	return py_map
 
 def _from_objectarray_map(scala_map):
