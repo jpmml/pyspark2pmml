@@ -18,6 +18,8 @@ import tempfile
 jpmml_sparkml_jars = os.environ.get("JPMML_SPARKML_JARS", "")
 jpmml_sparkml_packages = os.environ.get("JPMML_SPARKML_PACKAGES", "")
 
+_pmml_element = "<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">"
+
 if jpmml_sparkml_jars or jpmml_sparkml_packages:
 	submit_args = []
 	if jpmml_sparkml_jars:
@@ -73,9 +75,12 @@ class PySparkTest(PMMLTest):
 
 		pmmlByteArray = pmmlBuilder.buildByteArray()
 		self.assertTrue(isinstance(pmmlByteArray, bytes) or isinstance(pmmlByteArray, bytearray))
-		
+
 		pmmlString = pmmlByteArray.decode("utf-8")
-		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">" in pmmlString)
+		self.assertTrue(_pmml_element in pmmlString)
+
+		pmmlString = pmmlBuilder.buildString()
+		self.assertTrue(_pmml_element in pmmlString)
 		self.assertTrue("<VerificationFields>" in pmmlString)
 
 		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", False)
@@ -113,10 +118,8 @@ class XGBoostTest(PMMLTest):
 
 		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
 
-		pmmlByteArray = pmmlBuilder.buildByteArray()
-
-		pmmlString = pmmlByteArray.decode("utf-8")
-		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">" in pmmlString)
+		pmmlString = pmmlBuilder.buildString()
+		self.assertTrue(_pmml_element in pmmlString)
 
 	@requires_pmml_sparkml_xgboost
 	def testAuto(self):
@@ -139,7 +142,5 @@ class XGBoostTest(PMMLTest):
 
 		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
 
-		pmmlByteArray = pmmlBuilder.buildByteArray()
-
-		pmmlString = pmmlByteArray.decode("utf-8")
-		self.assertTrue("<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">" in pmmlString)
+		pmmlString = pmmlBuilder.buildString()
+		self.assertTrue(_pmml_element in pmmlString)

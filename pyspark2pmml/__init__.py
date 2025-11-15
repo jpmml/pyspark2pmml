@@ -22,6 +22,9 @@ class PMMLBuilder(object):
 	def buildByteArray(self):
 		return self.javaPmmlBuilder.buildByteArray()
 
+	def buildString(self):
+		return self.javaPmmlBuilder.buildString()
+
 	def buildFile(self, path):
 		javaFile = self.sc._jvm.java.io.File(path)
 		javaFile = self.javaPmmlBuilder.buildFile(javaFile)
