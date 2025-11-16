@@ -10,7 +10,7 @@ This package is a thin PySpark wrapper for the [JPMML-SparkML](https://github.co
 # Prerequisites #
 
 * Apache Spark 3.0.X, 3.1.X, 3.2.X, 3.3.X, 3.4.X, 3.5.X or 4.0.X.
-* Python 3.6 or newer.
+* Python 3.9 or newer.
 
 # Installation #
 

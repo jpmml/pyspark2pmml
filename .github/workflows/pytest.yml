@@ -13,10 +13,6 @@ jobs:
       matrix:
         config:
           - python: '3.9'
-            pyspark: '3.0.3'
-            java: '11'
-            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:2.0.6'
-          - python: '3.9'
             pyspark: '3.4.4'
             xgboost: '2.1.4'
             java: '11'
