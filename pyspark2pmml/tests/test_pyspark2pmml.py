@@ -54,13 +54,21 @@ class PMMLTest(TestCase):
 	def tearDownClass(cls):
 		cls.spark.stop()
 
-	def readDataset(self, name):
-		return self.spark.read.csv(os.path.join(os.path.dirname(__file__), "resources/{}.csv".format(name)), header = True, inferSchema = True)
+	def readCsv(self, name):
+		csvFile = os.path.join(os.path.dirname(__file__), "resources/{}.csv".format(name))
+		return self.spark.read \
+			.csv(csvFile, header = True, inferSchema = True)
+
+	def readLibSVM(self, name):
+		libsvmFile = os.path.join(os.path.dirname(__file__), "resources/{}.libsvm".format(name))
+		return self.spark.read \
+			.format("libsvm") \
+			.load(libsvmFile)
 
 class PySparkTest(PMMLTest):
 
-	def testIris(self):
-		df = self.readDataset("Iris")
+	def testIrisCsv(self):
+		df = self.readCsv("Iris")
 		
 		formula = RFormula(formula = "Species ~ .")
 		classifier = DecisionTreeClassifier()
@@ -81,19 +89,51 @@ class PySparkTest(PMMLTest):
 
 		pmmlString = pmmlBuilder.buildString()
 		self.assertTrue(_pmml_element in pmmlString)
+		self.assertTrue("Sepal_Length" in pmmlString)
+		self.assertTrue("Petal_Length" in pmmlString)
 		self.assertTrue("<VerificationFields>" in pmmlString)
 
-		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", False)
+		pmmlBuilder = pmmlBuilder \
+			.putOption(classifier, "compact", False)
+
 		with tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml") as nonCompactFile:
 			nonCompactPmmlPath = pmmlBuilder.buildFile(nonCompactFile.name)
 			nonCompactSize = os.path.getsize(nonCompactPmmlPath)
 
-		pmmlBuilder = pmmlBuilder.putOption(classifier, "compact", True)
+		pmmlBuilder = pmmlBuilder \
+			.putOption(classifier, "compact", True)
+
 		with tempfile.NamedTemporaryFile(prefix = "pyspark2pmml-", suffix = ".pmml") as compactFile:
 			compactPmmlPath = pmmlBuilder.buildFile(compactFile.name)
 			compactSize = os.path.getsize(compactPmmlPath)
 
 		self.assertGreater(nonCompactSize, compactSize + 100)
+
+	def testIrisLibSVM(self):
+		df = self.readLibSVM("Iris")
+
+		classifier = DecisionTreeClassifier()
+		pipeline = Pipeline(stages = [classifier])
+		pipelineModel = pipeline.fit(df)
+
+		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+
+		pmmlString = pmmlBuilder.buildString()
+		self.assertTrue(_pmml_element in pmmlString)
+		self.assertFalse("Sepal_Length" in pmmlString)
+		self.assertFalse("Petal_Length" in pmmlString)
+		self.assertTrue("features[0]" in pmmlString)
+		self.assertTrue("features[2]" in pmmlString)
+
+		pmmlBuilder = pmmlBuilder \
+			.putFieldNames("features", ["Sepal_Length", "Sepal_Width", "Petal_Length", "Petal_Width"])
+
+		pmmlString = pmmlBuilder.buildString()
+		self.assertTrue(_pmml_element in pmmlString)
+		self.assertTrue("Sepal_Length" in pmmlString)
+		self.assertTrue("Petal_Length" in pmmlString)
+		self.assertFalse("features[0]" in pmmlString)
+		self.assertFalse("features[2]" in pmmlString)
 
 class XGBoostTest(PMMLTest):
 
@@ -102,7 +142,7 @@ class XGBoostTest(PMMLTest):
 		from pyspark2pmml.xgboost import patch_model
 		from xgboost.spark import SparkXGBClassifier
 
-		df = self.readDataset("Iris")
+		df = self.readCsv("Iris")
 
 		formula = RFormula(formula = "Species ~ .")
 		classifier = SparkXGBClassifier()
@@ -126,7 +166,7 @@ class XGBoostTest(PMMLTest):
 		from pyspark2pmml.xgboost import patch_model
 		from xgboost.spark import SparkXGBRegressor
 
-		df = self.readDataset("Auto")
+		df = self.readCsv("Auto")
 
 		formula = RFormula(formula = "mpg ~ .")
 		regressor = SparkXGBRegressor()

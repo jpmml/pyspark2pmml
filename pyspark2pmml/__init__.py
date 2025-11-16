@@ -40,6 +40,18 @@ class PMMLBuilder(object):
 			self.javaPmmlBuilder.putOption(javaPipelineStage, javaKey, javaValue)
 		return self
 
+	def putFieldName(self, column, name):
+		javaColumn = _py2java(self.sc, column)
+		javaName = _py2java(self.sc, name)
+		self.javaPmmlBuilder.putFieldName(javaColumn, javaName)
+		return self
+
+	def putFieldNames(self, column, names):
+		javaColumn = _py2java(self.sc, column)
+		javaNames = _py2java(self.sc, names)
+		self.javaPmmlBuilder.putFieldNames(javaColumn, javaNames)
+		return self
+
 	def verify(self, df, precision = 1e-14, zeroThreshold = 1e-14):
 		javaDf = _py2java(self.sc, df)
 		self.javaPmmlBuilder.verify(javaDf, precision, zeroThreshold)
