@@ -1,71 +1,27 @@
-import findspark
-
-findspark.init()
+from pyspark2pmml.tests import JPMML_SPARKML_JARS, JPMML_SPARKML_PACKAGES, PySpark2PMMLTest
 
 from functools import wraps
 from py4j.java_gateway import JavaObject
-from pyspark.context import SparkContext
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
-from pyspark.sql import SparkSession
 from pyspark2pmml import PMMLBuilder
-from unittest import SkipTest, TestCase
+from unittest import SkipTest
 
 import os
 import tempfile
 
-jpmml_sparkml_jars = os.environ.get("JPMML_SPARKML_JARS", "")
-jpmml_sparkml_packages = os.environ.get("JPMML_SPARKML_PACKAGES", "")
-
 _pmml_element = "<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http://jpmml.org/jpmml-model/InlineTable\" version=\"4.4\">"
-
-if jpmml_sparkml_jars or jpmml_sparkml_packages:
-	submit_args = []
-	if jpmml_sparkml_jars:
-		submit_args.append("--jars {}".format(jpmml_sparkml_jars))
-	if jpmml_sparkml_packages:
-		submit_args.append("--packages {}".format(jpmml_sparkml_packages))
-	submit_args.append("pyspark-shell")
-
-	os.environ['PYSPARK_SUBMIT_ARGS'] = " ".join(submit_args)
 
 def requires_pmml_sparkml_xgboost(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		if "pmml-sparkml-example-executable" not in jpmml_sparkml_jars and "pmml-sparkml-xgboost" not in jpmml_sparkml_packages:
+		if "pmml-sparkml-example-executable" not in JPMML_SPARKML_JARS and "pmml-sparkml-xgboost" not in JPMML_SPARKML_PACKAGES:
 			raise SkipTest()
 		return func(*args, **kwargs)
 	return wrapper
 
-class PMMLTest(TestCase):
-
-	@classmethod
-	def setUpClass(cls):
-		spark_builder = SparkSession.builder \
-			.appName("PMMLTest") \
-			.master("local[2]")
-
-		cls.spark = spark_builder.getOrCreate()
-
-		cls.sc = cls.spark.sparkContext
-
-	@classmethod
-	def tearDownClass(cls):
-		cls.spark.stop()
-
-	def readCsv(self, name):
-		csvFile = os.path.join(os.path.dirname(__file__), "resources/{}.csv".format(name))
-		return self.spark.read \
-			.csv(csvFile, header = True, inferSchema = True)
-
-	def readLibSVM(self, name):
-		libsvmFile = os.path.join(os.path.dirname(__file__), "resources/{}.libsvm".format(name))
-		return self.spark.read \
-			.format("libsvm") \
-			.load(libsvmFile)
-
-class PySparkTest(PMMLTest):
+class PySparkTest(PySpark2PMMLTest):
 
 	def testIrisCsv(self):
 		df = self.readCsv("Iris")
@@ -135,7 +91,7 @@ class PySparkTest(PMMLTest):
 		self.assertFalse("features[0]" in pmmlString)
 		self.assertFalse("features[2]" in pmmlString)
 
-class XGBoostTest(PMMLTest):
+class XGBoostTest(PySpark2PMMLTest):
 
 	@requires_pmml_sparkml_xgboost
 	def testIris(self):

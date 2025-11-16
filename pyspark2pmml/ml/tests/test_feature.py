@@ -1,24 +1,13 @@
+from pyspark2pmml.tests import PySpark2PMMLTest
+
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
-from pyspark.sql import SparkSession
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
 from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, SparseToDenseTransformer
 from tempfile import TemporaryDirectory
-from unittest import skipIf, TestCase
 
-import os
 import math
-import pyspark
-
-_SPARK_VERSION = tuple(map(int, pyspark.__version__.split(".")))
-
-def _require_spark_version(major, minor, patch = 0):
-	return _SPARK_VERSION >= (major, minor, patch)
-
-skip_if_legacy = skipIf(not _require_spark_version(3, 4), "Legacy Apache Spark version")
-
-jpmml_sparkml_packages = os.environ["JPMML_SPARKML_PACKAGES"]
 
 def _clone(obj):
 	cls = obj.__class__
@@ -42,7 +31,7 @@ def _escape_df(df):
 		return tuple([_escape_value(element) for element in row])
 	return [_escape_row(row) for row in df]
 
-class SparkTest(TestCase):
+class FeatureTest(PySpark2PMMLTest):
 
 	def _check(self, obj):
 		return obj
@@ -55,25 +44,7 @@ class SparkTest(TestCase):
 
 		return obj
 
-	@classmethod
-	def setUpClass(cls):
-		spark_builder = SparkSession.builder \
-			.appName("DomainTest") \
-			.master("local[2]")
-
-		if jpmml_sparkml_packages:
-			spark_builder.config("spark.jars.packages", jpmml_sparkml_packages)
-
-		cls.spark = spark_builder.getOrCreate()
-
-		cls.sc = cls.spark.sparkContext
-
-	@classmethod
-	def tearDownClass(cls):
-		cls.spark.stop()
-
-@skip_if_legacy
-class DomainTest(SparkTest):
+class DomainTest(FeatureTest):
 	pass
 
 class CategoricalDomainTest(DomainTest):
@@ -221,7 +192,7 @@ class ContinuousDomainTest(DomainTest):
 
 		self.assertEqual(expected_rows, transformed_df.collect())
 
-class InvalidCategoryTransformerTest(SparkTest):
+class InvalidCategoryTransformerTest(FeatureTest):
 
 	def test_fit_transform(self):
 		schema = StructType([
@@ -295,7 +266,7 @@ class InvalidCategoryTransformerTest(SparkTest):
 
 		self.assertEqual(_escape_df(expected_test_rows), _escape_df(transformed_test_df.collect()))
 
-class SparseToDenseTransformerTest(SparkTest):
+class SparseToDenseTransformerTest(FeatureTest):
 
 	def test_fit_transform(self):
 		schema = StructType([
