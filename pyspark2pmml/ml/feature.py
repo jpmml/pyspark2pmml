@@ -316,6 +316,26 @@ class SparseToDenseTransformer(JavaTransformer, HasInputCol, HasOutputCol, JavaM
 	def read(cls):
 		return _JavaReader(cls, SparseToDenseTransformer._java_class_name)
 
+class VectorDisassembler(JavaTransformer, HasInputCol, HasOutputCols, JavaMLWritable):
+
+	_java_class_name = "org.jpmml.sparkml.feature.VectorDisassembler"
+
+	def __init__(self, *, java_obj = None, **kwargs):
+		if java_obj is None:
+			java_obj = _create_java_object(VectorDisassembler._java_class_name)
+		super().__init__(java_obj = java_obj)
+		self._set(**kwargs)
+
+	def setInputCol(self, value):
+		return self._set(inputCol = value)
+
+	def setOutputCols(self, value):
+		return self._set(outputCols = value)
+
+	@classmethod
+	def read(cls):
+		return _JavaReader(cls, VectorDisassembler._java_class_name)
+
 class _JavaReader(MLReader):
 
 	def __init__(self, py_class, java_class_name):

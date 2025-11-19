@@ -4,7 +4,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
-from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, SparseToDenseTransformer
+from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, SparseToDenseTransformer, VectorDisassembler
 from tempfile import TemporaryDirectory
 
 import math
@@ -302,3 +302,36 @@ class SparseToDenseTransformerTest(FeatureTest):
 		vectors = [actual_row.denseFeatures for actual_row in actual_rows]
 		for vector in vectors:
 			self.assertIsInstance(vector, DenseVector)
+
+class VectorDisassemblerTest(FeatureTest):
+
+	def test_fit_transform(self):
+		schema = StructType([
+			StructField("features", VectorUDT(), True)
+		])
+
+		rows = [
+			(Vectors.sparse(3, [1], [1.0]), ),
+			(Vectors.dense(0.0, 0.0, 1.0), ),
+			(Vectors.sparse(3, [0], [1.0]), )
+		]
+
+		df = self.spark.createDataFrame(rows, schema)
+
+		transformer = self._checked_clone(VectorDisassembler() \
+			.setInputCol("features") \
+			.setOutputCols(["first", "second", "third"])
+		)
+
+		transformed_df = transformer.transform(df) \
+			.select("first", "second", "third")
+
+		expected_rows = [
+			(None, 1.0, None),
+			(0.0, 0.0, 1.0),
+			(1.0, None, None)
+		]
+
+		actual_rows = transformed_df.collect()
+
+		self.assertEqual(expected_rows, actual_rows)
