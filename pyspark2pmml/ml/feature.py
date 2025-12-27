@@ -5,6 +5,8 @@ from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
 from pyspark.sql import SparkSession
 from py4j.java_gateway import JavaObject
 
+import warnings
+
 _JVM = None
 
 def _jvm():
@@ -296,13 +298,13 @@ class InvalidCategoryTransformer(JavaTransformer, HasInputCol, HasInputCols, Has
 	def read(cls):
 		return _JavaReader(cls, InvalidCategoryTransformer._java_class_name)
 
-class SparseToDenseTransformer(JavaTransformer, HasInputCol, HasOutputCol, JavaMLWritable):
+class VectorDensifier(JavaTransformer, HasInputCol, HasOutputCol, JavaMLWritable):
 
-	_java_class_name = "org.jpmml.sparkml.feature.SparseToDenseTransformer"
+	_java_class_name = "org.jpmml.sparkml.feature.VectorDensifier"
 
 	def __init__(self, *, java_obj = None, **kwargs):
 		if java_obj is None:
-			java_obj = _create_java_object(SparseToDenseTransformer._java_class_name)
+			java_obj = _create_java_object(VectorDensifier._java_class_name)
 		super().__init__(java_obj = java_obj)
 		self._set(**kwargs)
 
@@ -311,6 +313,20 @@ class SparseToDenseTransformer(JavaTransformer, HasInputCol, HasOutputCol, JavaM
 
 	def setOutputCol(self, value):
 		return self._set(outputCol = value)
+
+	@classmethod
+	def read(cls):
+		return _JavaReader(cls, VectorDensifier._java_class_name)
+
+class SparseToDenseTransformer(VectorDensifier):
+
+	_java_class_name = "org.jpmml.sparkml.feature.SparseToDenseTransformer"
+
+	def __init__(self, *, java_obj = None, **kwargs):
+		warnings.warn( "SparseToDenseTransformer is deprecated. Use VectorDensifier instead.", DeprecationWarning, stacklevel = 2)
+		if java_obj is None:
+			java_obj = _create_java_object(SparseToDenseTransformer._java_class_name)
+		super().__init__(java_obj = java_obj, **kwargs)
 
 	@classmethod
 	def read(cls):

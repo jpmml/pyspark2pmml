@@ -4,7 +4,7 @@ from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
 from pyspark.sql.types import DoubleType, StructType, StructField, StringType
-from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, SparseToDenseTransformer, VectorDisassembler
+from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, VectorDensifier, VectorDisassembler
 from tempfile import TemporaryDirectory
 
 import math
@@ -266,7 +266,7 @@ class InvalidCategoryTransformerTest(FeatureTest):
 
 		self.assertEqual(_escape_df(expected_test_rows), _escape_df(transformed_test_df.collect()))
 
-class SparseToDenseTransformerTest(FeatureTest):
+class VectorDensifierTest(FeatureTest):
 
 	def test_fit_transform(self):
 		schema = StructType([
@@ -281,7 +281,7 @@ class SparseToDenseTransformerTest(FeatureTest):
 
 		df = self.spark.createDataFrame(rows, schema)
 
-		transformer = self._checked_clone(SparseToDenseTransformer() \
+		transformer = self._checked_clone(VectorDensifier() \
 			.setInputCol("features") \
 			.setOutputCol("denseFeatures")
 		)
