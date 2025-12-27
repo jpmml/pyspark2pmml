@@ -16,16 +16,20 @@ jobs:
             pyspark: '3.4.4'
             xgboost: '2.1.4'
             java: '11'
-            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.0.7,org.jpmml:pmml-sparkml-xgboost:3.0.7,com.google.guava:guava:33.5.0-jre,ml.dmlc:xgboost4j-spark_2.12:2.1.4'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.0.8,org.jpmml:pmml-sparkml-xgboost:3.0.8,com.google.guava:guava:33.5.0-jre,ml.dmlc:xgboost4j-spark_2.12:2.1.4'
           - python: '3.11'
             pyspark: '3.5.6'
             xgboost: '3.1.0'
             java: '11'
-            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.1.7,org.jpmml:pmml-sparkml-xgboost:3.1.7,com.google.guava:guava:33.5.0-jre,ml.dmlc:xgboost4j-spark_2.12:3.1.0'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.1.8,org.jpmml:pmml-sparkml-xgboost:3.1.8,com.google.guava:guava:33.5.0-jre,ml.dmlc:xgboost4j-spark_2.12:3.1.0'
           - python: '3.11'
             pyspark: '4.0.0'
             java: '17'
-            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.2.6'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.2.7'
+          - python: '3.11'
+            pyspark: '4.1.0'
+            java: '17'
+            jpmml-sparkml-packages: 'org.jpmml:pmml-sparkml:3.3.0'
 
     steps:
     - uses: actions/checkout@v4
