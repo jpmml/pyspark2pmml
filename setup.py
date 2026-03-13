@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-exec(open('pyspark2pmml/metadata.py').read())
+exec(open("pyspark2pmml/metadata.py").read())
 
 setup(
 	name = "pyspark2pmml",

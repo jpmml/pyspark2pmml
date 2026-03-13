@@ -1,9 +1,9 @@
+from py4j.java_gateway import JavaObject
 from pyspark.ml.param import Param, Params, TypeConverters
 from pyspark.ml.param.shared import HasInputCol, HasInputCols, HasOutputCol, HasOutputCols
 from pyspark.ml.util import JavaMLWritable, MLReader
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
 from pyspark.sql import SparkSession
-from py4j.java_gateway import JavaObject
 
 import warnings
 
