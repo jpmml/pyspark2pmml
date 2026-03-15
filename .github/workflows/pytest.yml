@@ -45,7 +45,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install numpy pyspark==${{ matrix.pyspark }}
-        if [ -n "${{ matrix.xgboost }}" ]; then pip install scikit-learn xgboost==${{ matrix.xgboost }}; fi
+        if [ -n "${{ matrix.xgboost }}" ]; then pip install pandas pyarrow scikit-learn xgboost==${{ matrix.xgboost }}; fi
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - run: |
         python -m pytest
