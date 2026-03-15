@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
+        include:
           - python: '3.9'
             pyspark: '3.4.4'
             xgboost: '2.1.4'
@@ -36,18 +36,18 @@ jobs:
     - uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
-        java-version: ${{ matrix.config.java }}
+        java-version: ${{ matrix.java }}
     - uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.config.python }}
+        python-version: ${{ matrix.python }}
         cache: 'pip'
     - run: |
         python -m pip install --upgrade pip
         pip install pytest
-        pip install pyspark==${{ matrix.config.pyspark }}
-        if [ -n "${{ matrix.config.xgboost }}" ]; then pip install xgboost==${{ matrix.config.xgboost }}; fi
+        pip install numpy pyspark==${{ matrix.pyspark }}
+        if [ -n "${{ matrix.xgboost }}" ]; then pip install scikit-learn xgboost==${{ matrix.xgboost }}; fi
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - env:
-        JPMML_SPARKML_PACKAGES: ${{ matrix.config.jpmml-sparkml-packages }}
-      run: |
+    - run: |
         python -m pytest
+      env:
+        JPMML_SPARKML_PACKAGES: ${{ matrix.jpmml-sparkml-packages }}
