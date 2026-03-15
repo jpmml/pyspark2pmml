@@ -20,12 +20,13 @@ setup(
 		"Topic :: Software Development",
 		"Topic :: Scientific/Engineering"
 	],
-	packages = find_packages(exclude = ["*.tests"]),
+	packages = find_packages(exclude = ["*.tests.*", "*.tests"]),
 	exclude_package_data = {
 		"" : ["README.md"],
 	},
 	python_requires = ">=3.6",
 	install_requires = [
-		"py4j"
+		"py4j",
+		"pyspark"
 	]
 )
