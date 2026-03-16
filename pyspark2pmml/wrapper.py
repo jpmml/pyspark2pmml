@@ -43,9 +43,9 @@ def _from_numberarray_map(scala_map):
 
 class JPMMLReadable:
 
-    @classmethod
-    def read(cls):
-        return _JavaReader(cls, cls._java_class_name)
+	@classmethod
+	def read(cls):
+		return _JavaReader(cls, cls._java_class_name)
 
 class _JavaReader(MLReader):
 
