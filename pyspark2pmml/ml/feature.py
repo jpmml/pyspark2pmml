@@ -3,20 +3,9 @@ from pyspark.ml.param import Param, Params, TypeConverters
 from pyspark.ml.param.shared import HasInputCol, HasInputCols, HasOutputCol, HasOutputCols
 from pyspark.ml.util import JavaMLWritable, MLReader
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
-from pyspark.sql import SparkSession
+from pyspark2pmml import _jvm
 
 import warnings
-
-_JVM = None
-
-def _jvm():
-	global _JVM
-	if _JVM is None:
-		spark = SparkSession.getActiveSession()
-		if spark is None:
-			raise RuntimeError("Apache Spark session not found")
-		_JVM = spark._jvm
-	return _JVM
 
 def _create_java_object(java_class_name):
 	return getattr(_jvm(), java_class_name)()
