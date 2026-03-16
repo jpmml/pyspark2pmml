@@ -202,11 +202,17 @@ class DomainParamsMixin:
 			if param in self._defaultParamMap and self._defaultParamMap[param] is not None:
 				self._defaultParamMap[param] = param_parser(self._defaultParamMap[param])
 
-class Domain(DomainParamsMixin, JavaEstimator, JavaMLWritable):
+class JPMMLReadable:
+
+    @classmethod
+    def read(cls):
+        return _JavaReader(cls, cls._java_class_name)
+
+class Domain(DomainParamsMixin, JavaEstimator, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.Domain"
 
-class DomainModel(DomainParamsMixin, JavaTransformer, JavaMLWritable):
+class DomainModel(DomainParamsMixin, JavaTransformer, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.DomainModel"
 
@@ -223,17 +229,9 @@ class CategoricalDomain(Domain, HasCategoricalDomainParams):
 	def _create_model(self, java_obj):
 		return CategoricalDomainModel(java_obj)
 
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, CategoricalDomain._java_class_name)
-
 class CategoricalDomainModel(DomainModel, HasCategoricalDomainParams):
 
 	_java_class_name = "org.jpmml.sparkml.feature.CategoricalDomainModel"
-
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, CategoricalDomainModel._java_class_name)
 
 class ContinuousDomain(Domain, HasContinuousDomainParams):
 
@@ -248,19 +246,11 @@ class ContinuousDomain(Domain, HasContinuousDomainParams):
 	def _create_model(self, java_obj):
 		return ContinuousDomainModel(java_obj)
 
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, ContinuousDomain._java_class_name)
-
 class ContinuousDomainModel(DomainModel, HasContinuousDomainParams):
 
 	_java_class_name = "org.jpmml.sparkml.feature.ContinuousDomainModel"
 
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, ContinuousDomainModel._java_class_name)
-
-class InvalidCategoryTransformer(JavaTransformer, HasInputCol, HasInputCols, HasOutputCol, HasOutputCols, JavaMLWritable):
+class InvalidCategoryTransformer(JavaTransformer, HasInputCol, HasInputCols, HasOutputCol, HasOutputCols, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.InvalidCategoryTransformer"
 
@@ -282,11 +272,7 @@ class InvalidCategoryTransformer(JavaTransformer, HasInputCol, HasInputCols, Has
 	def setOutputCols(self, value):
 		return self._set(outputCols = value)
 
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, InvalidCategoryTransformer._java_class_name)
-
-class VectorDensifier(JavaTransformer, HasInputCol, HasOutputCol, JavaMLWritable):
+class VectorDensifier(JavaTransformer, HasInputCol, HasOutputCol, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.VectorDensifier"
 
@@ -302,10 +288,6 @@ class VectorDensifier(JavaTransformer, HasInputCol, HasOutputCol, JavaMLWritable
 	def setOutputCol(self, value):
 		return self._set(outputCol = value)
 
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, VectorDensifier._java_class_name)
-
 class SparseToDenseTransformer(VectorDensifier):
 
 	_java_class_name = "org.jpmml.sparkml.feature.SparseToDenseTransformer"
@@ -316,11 +298,7 @@ class SparseToDenseTransformer(VectorDensifier):
 			java_obj = _create_java_object(SparseToDenseTransformer._java_class_name)
 		super().__init__(java_obj = java_obj, **kwargs)
 
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, SparseToDenseTransformer._java_class_name)
-
-class VectorDisassembler(JavaTransformer, HasInputCol, HasOutputCols, JavaMLWritable):
+class VectorDisassembler(JavaTransformer, HasInputCol, HasOutputCols, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.VectorDisassembler"
 
@@ -335,10 +313,6 @@ class VectorDisassembler(JavaTransformer, HasInputCol, HasOutputCols, JavaMLWrit
 
 	def setOutputCols(self, value):
 		return self._set(outputCols = value)
-
-	@classmethod
-	def read(cls):
-		return _JavaReader(cls, VectorDisassembler._java_class_name)
 
 class _JavaReader(MLReader):
 
