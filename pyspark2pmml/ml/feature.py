@@ -1,4 +1,3 @@
-from py4j.java_gateway import JavaObject
 from pyspark.ml.param import Param, Params, TypeConverters
 from pyspark.ml.param.shared import HasInputCol, HasInputCols, HasOutputCol, HasOutputCols
 from pyspark.ml.util import JavaMLWritable
@@ -95,9 +94,6 @@ class HasCategoricalDomainParams(HasDomainParams):
 
 	dataValues = Param(Params._dummy(), "dataValues", "")
 
-	def __init__(self):
-		super().__init__()
-
 	def getDataValues(self):
 		return self.getOrDefault(self.dataValues)
 
@@ -153,9 +149,6 @@ class DomainParamsMixin:
 			java_param = self._java_obj.getParam(param.name)
 			return java_param.w(param_formatter(value))
 		return super()._make_java_param_pair(param, value)
-
-	def _transfer_params_to_java(self):
-		super()._transfer_params_to_java()
 
 	def _transfer_params_from_java(self):
 		super()._transfer_params_from_java()
