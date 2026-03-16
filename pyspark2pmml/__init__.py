@@ -1,14 +1,7 @@
 from py4j.java_gateway import JavaClass
 from pyspark.ml.common import _py2java
-from pyspark.sql import SparkSession
 
 from .metadata import __copyright__, __license__, __version__
-
-def _jvm():
-	spark = SparkSession.getActiveSession()
-	if spark is None:
-		raise RuntimeError("Apache Spark session not found")
-	return spark._jvm
 
 class PMMLBuilder(object):
 
