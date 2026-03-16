@@ -1,5 +1,5 @@
 from pyspark import SparkContext
-from pyspark.ml.util import MLReader
+from pyspark.ml.util import MLReadable, MLReader
 
 def _jvm():
 	return SparkContext._jvm
@@ -38,7 +38,7 @@ def _from_objectarray_map(scala_map):
 def _from_numberarray_map(scala_map):
 	return _from_array_map(scala_map)
 
-class JPMMLReadable:
+class JPMMLReadable(MLReadable):
 
 	@classmethod
 	def read(cls):
@@ -53,7 +53,7 @@ class _JavaReader(MLReader):
 
 	def load(self, path):
 		java_obj = getattr(_jvm(), self.java_class_name).load(path)
-		
+
 		py_obj = self.py_class(java_obj = java_obj)
 		py_obj._resetUid(java_obj.uid())
 		py_obj._transfer_params_from_java()

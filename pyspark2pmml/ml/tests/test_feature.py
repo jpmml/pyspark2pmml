@@ -3,21 +3,19 @@ from pyspark2pmml.tests import PySpark2PMMLTest
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
-from pyspark.sql.types import DoubleType, StructType, StructField, StringType
+from pyspark.sql.types import DoubleType, StringType, StructType, StructField
 from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, VectorDensifier, VectorDisassembler
 from tempfile import TemporaryDirectory
 
 import math
 
 def _clone(obj):
-	cls = obj.__class__
-
 	with TemporaryDirectory() as tmpDir:
 		obj.write() \
 			.overwrite() \
 			.save(tmpDir)
 
-		cloned_obj = cls.read() \
+		cloned_obj = type(obj) \
 			.load(tmpDir)
 
 		return cloned_obj
