@@ -43,6 +43,17 @@ def _from_numberarray_map(scala_map):
 
 class HasDomainParams(Params):
 
+	inputCols = Param(Params._dummy(), "inputCols", "", typeConverter = TypeConverters.toListString)
+	outputCols = Param(Params._dummy(), "outputCols", "", typeConverter = TypeConverters.toListString)
+
+	missingValues = Param(Params._dummy(), "missingValues", "")
+	missingValueTreatment = Param(Params._dummy(), "missingValueTreatment", "", typeConverter = TypeConverters.toString)
+	missingValueReplacement = Param(Params._dummy(), "missingValueReplacement", "")
+	invalidValueTreatment = Param(Params._dummy(), "invalidValueTreatment", "", typeConverter = TypeConverters.toString)
+	invalidValueReplacement = Param(Params._dummy(), "invalidValueReplacement", "")
+
+	withData = Param(Params._dummy(), "withData", "", typeConverter = TypeConverters.toBoolean)
+
 	_param_formatters = {
 		"missingValues" : _to_objectarray,
 		"dataRanges" : _to_numberarray_map,
@@ -57,26 +68,14 @@ class HasDomainParams(Params):
 	def __init__(self):
 		super().__init__()
 
-		self.inputCols = Param(self, "inputCols", "", typeConverter = TypeConverters.toListString)
-		self.outputCols = Param(self, "outputCols", "", typeConverter = TypeConverters.toListString)
-
-		self.missingValues = Param(self, "missingValues", "")
-		self.missingValueTreatment = Param(self, "missingValueTreatment", "", typeConverter = TypeConverters.toString)
-		self.missingValueReplacement = Param(self, "missingValueReplacement", "")
-		self.invalidValueTreatment = Param(self, "invalidValueTreatment", "", typeConverter = TypeConverters.toString)
-		self.invalidValueReplacement = Param(self, "invalidValueReplacement", "")
-
 		self._setDefault(
 			missingValues = [],
 			missingValueTreatment = "asIs",
 			missingValueReplacement = None,
 			invalidValueTreatment = "returnInvalid",
-			invalidValueReplacement = None
+			invalidValueReplacement = None,
+			withData = True
 		)
-
-		self.withData = Param(self, "withData", "", typeConverter = TypeConverters.toBoolean)
-
-		self._setDefault(withData = True)
 
 	def getInputCols(self):
 		return self.getOrDefault(self.inputCols)
@@ -128,10 +127,10 @@ class HasDomainParams(Params):
 
 class HasCategoricalDomainParams(HasDomainParams):
 
+	dataValues = Param(Params._dummy(), "dataValues", "")
+
 	def __init__(self):
 		super().__init__()
-
-		self.dataValues = Param(self, "dataValues", "")
 
 	def getDataValues(self):
 		return self.getOrDefault(self.dataValues)
@@ -141,20 +140,20 @@ class HasCategoricalDomainParams(HasDomainParams):
 
 class HasContinuousDomainParams(HasDomainParams):
 
+	outlierTreatment = Param(Params._dummy(), "outlierTreatment", "", typeConverter = TypeConverters.toString)
+	lowValue = Param(Params._dummy(), "lowValue", "")
+	highValue = Param(Params._dummy(), "highValue", "")
+
+	dataRanges = Param(Params._dummy(), "dataRanges", "")
+
 	def __init__(self):
 		super().__init__()
-
-		self.outlierTreatment = Param(self, "outlierTreatment", "", typeConverter = TypeConverters.toString)
-		self.lowValue = Param(self, "lowValue", "")
-		self.highValue = Param(self, "highValue", "")
 
 		self._setDefault(
 			outlierTreatment = "asIs",
 			lowValue = None,
 			highValue = None
 		)
-
-		self.dataRanges = Param(self, "dataRanges", "")
 
 	def getOutlierTreatment(self):
 		return self.getOrDefault(self.outlierTreatment)
