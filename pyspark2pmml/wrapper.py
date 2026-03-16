@@ -1,11 +1,8 @@
+from pyspark import SparkContext
 from pyspark.ml.util import MLReader
-from pyspark.sql import SparkSession
 
 def _jvm():
-	spark = SparkSession.getActiveSession()
-	if spark is None:
-		raise RuntimeError("Apache Spark session not found")
-	return spark._jvm
+	return SparkContext._jvm
 
 def _create_java_object(java_class_name):
 	return getattr(_jvm(), java_class_name)()
