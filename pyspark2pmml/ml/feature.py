@@ -2,9 +2,41 @@ from pyspark.ml.param import Param, Params, TypeConverters
 from pyspark.ml.param.shared import HasInputCol, HasInputCols, HasOutputCol, HasOutputCols
 from pyspark.ml.util import JavaMLWritable
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
-from pyspark2pmml.wrapper import _create_java_object, _from_numberarray_map, _from_objectarray, _from_objectarray_map, _register_jpmml_class, _to_numberarray_map, _to_objectarray, _to_objectarray_map, JPMMLReadable
+from pyspark2pmml.wrapper import _create_java_object, _jvm, _register_jpmml_class, JPMMLReadable
 
 import warnings
+
+def _to_objectarray(py_values):
+	jvm = _jvm()
+	return jvm.java.util.ArrayList(list(py_values)).toArray()
+
+def _from_objectarray(java_values):
+	return list(java_values)
+
+def _to_objectarray_map(py_map):
+	jvm = _jvm()
+	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toObjectArrayMap(py_map)
+	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
+	return scala_map
+
+def _to_numberarray_map(py_map):
+	jvm = _jvm()
+	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toNumberArrayMap(py_map)
+	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
+	return scala_map
+
+def _from_array_map(scala_map):
+	jvm = _jvm()
+	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toJavaMap(scala_map)
+	py_map = {k : list(v) for k, v in jvm.org.jpmml.sparkml.feature.DomainUtil.toListMap(java_map).items()}
+	return py_map
+
+def _from_objectarray_map(scala_map):
+	return _from_array_map(scala_map)
+
+def _from_numberarray_map(scala_map):
+	return _from_array_map(scala_map)
+
 
 class HasDomainParams(Params):
 
