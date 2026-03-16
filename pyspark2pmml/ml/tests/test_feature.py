@@ -33,14 +33,14 @@ def _escape_df(df):
 
 class FeatureTest(PySpark2PMMLTest):
 
-	def _check(self, obj):
+	def _check_params(self, obj):
 		return obj
 
 	def _checked_clone(self, obj):
-		self._check(obj)
+		self._check_params(obj)
 
 		obj = _clone(obj)
-		self._check(obj)
+		self._check_params(obj)
 
 		return obj
 
@@ -49,27 +49,40 @@ class DomainTest(FeatureTest):
 
 class CategoricalDomainTest(DomainTest):
 
-	def _check(self, obj):
-		self.assertEqual(8 + 1, len(obj.params))
+	def _check_default_params(self, domain):
+		self.assertEqual(8 + 1, len(domain.params))
 
-		self.assertEqual(["fruit", "color"], obj.getInputCols())
-		self.assertEqual(["pmml_fruit", "pmml_color"], obj.getOutputCols())
+		self.assertEqual([], domain.getMissingValues())
+		self.assertEqual("asIs", domain.getMissingValueTreatment())
+		self.assertIsNone(domain.getMissingValueReplacement())
+		self.assertEqual("returnInvalid", domain.getInvalidValueTreatment())
+		self.assertIsNone(domain.getInvalidValueReplacement())
+		self.assertTrue(domain.getWithData())
 
-		self.assertEqual("asValue", obj.getMissingValueTreatment())
-		self.assertEqual("(other)", obj.getMissingValueReplacement())
-		self.assertEqual("asMissing", obj.getInvalidValueTreatment())
-		self.assertIsNone(obj.getInvalidValueReplacement())
+	def _check_params(self, domain):
+		self.assertEqual(8 + 1, len(domain.params))
 
-		self.assertTrue(obj.getWithData())
+		self.assertEqual(["fruit", "color"], domain.getInputCols())
+		self.assertEqual(["pmml_fruit", "pmml_color"], domain.getOutputCols())
+
+		self.assertEqual([], domain.getMissingValues())
+		self.assertEqual("asValue", domain.getMissingValueTreatment())
+		self.assertEqual("(other)", domain.getMissingValueReplacement())
+		self.assertEqual("asMissing", domain.getInvalidValueTreatment())
+		self.assertIsNone(domain.getInvalidValueReplacement())
+		self.assertTrue(domain.getWithData())
 
 		dataValues = {
 			"fruit" : ["apple", "orange"],
 			"color" : ["green", "yellow", "red"]
 		}
 
-		self.assertEqual(dataValues, obj.getDataValues())
+		self.assertEqual(dataValues, domain.getDataValues())
 
 	def test_fit_transform(self):
+		domain = CategoricalDomain()
+		self._check_default_params(domain)
+
 		schema = StructType([
 			StructField("fruit", StringType(), True),
 			StructField("color", StringType(), True)
@@ -120,31 +133,48 @@ class CategoricalDomainTest(DomainTest):
 
 class ContinuousDomainTest(DomainTest):
 
-	def _check(self, obj):
-		self.assertEqual(8 + 4, len(obj.params))
+	def _check_default_params(self, domain):
+		self.assertEqual(8 + 4, len(domain.params))
 
-		self.assertEqual(["width", "height"], obj.getInputCols())
-		self.assertEqual(["pmml_width", "pmml_height"], obj.getOutputCols())
+		self.assertEqual([], domain.getMissingValues())
+		self.assertEqual("asIs", domain.getMissingValueTreatment())
+		self.assertIsNone(domain.getMissingValueReplacement())
+		self.assertEqual("returnInvalid", domain.getInvalidValueTreatment())
+		self.assertIsNone(domain.getInvalidValueReplacement())
+		self.assertTrue(domain.getWithData())
 
-		self.assertEqual("asValue", obj.getMissingValueTreatment())
-		self.assertEqual(-1, obj.getMissingValueReplacement())
-		self.assertEqual("asMissing", obj.getInvalidValueTreatment())
-		self.assertIsNone(obj.getInvalidValueReplacement())
+		self.assertEqual("asIs", domain.getOutlierTreatment())
+		self.assertIsNone(domain.getLowValue())
+		self.assertIsNone(domain.getHighValue())
 
-		self.assertTrue(obj.getWithData())
+	def _check_params(self, domain):
+		self.assertEqual(8 + 4, len(domain.params))
 
-		self.assertEqual("asMissingValues", obj.getOutlierTreatment())
-		self.assertEqual(20.0, obj.getLowValue())
-		self.assertEqual(80.0, obj.getHighValue())
+		self.assertEqual(["width", "height"], domain.getInputCols())
+		self.assertEqual(["pmml_width", "pmml_height"], domain.getOutputCols())
+
+		self.assertEqual([], domain.getMissingValues())
+		self.assertEqual("asValue", domain.getMissingValueTreatment())
+		self.assertEqual(-1, domain.getMissingValueReplacement())
+		self.assertEqual("asMissing", domain.getInvalidValueTreatment())
+		self.assertIsNone(domain.getInvalidValueReplacement())
+		self.assertTrue(domain.getWithData())
+
+		self.assertEqual("asMissingValues", domain.getOutlierTreatment())
+		self.assertEqual(20.0, domain.getLowValue())
+		self.assertEqual(80.0, domain.getHighValue())
 
 		dataRanges = {
 			"width" : [0, 100],
 			"height" : [0, 100]
 		}
 
-		self.assertEqual(dataRanges, obj.getDataRanges())
+		self.assertEqual(dataRanges, domain.getDataRanges())
 
 	def test_fit_transform(self):
+		domain = ContinuousDomain()
+		self._check_default_params(domain)
+
 		schema = StructType([
 			StructField("width", DoubleType(), True),
 			StructField("height", DoubleType(), True)

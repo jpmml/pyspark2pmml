@@ -20,11 +20,10 @@ class PySpark2PMMLTest(TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		spark_builder = SparkSession.builder \
+		cls.spark = SparkSession.builder \
 			.appName("PMMLTest") \
-			.master("local[2]")
-
-		cls.spark = spark_builder.getOrCreate()
+			.master("local[2]") \
+			.getOrCreate()
 
 		cls.sc = cls.spark.sparkContext
 
