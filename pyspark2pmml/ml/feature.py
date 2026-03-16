@@ -3,7 +3,7 @@ from pyspark.ml.param import Param, Params, TypeConverters
 from pyspark.ml.param.shared import HasInputCol, HasInputCols, HasOutputCol, HasOutputCols
 from pyspark.ml.util import JavaMLWritable
 from pyspark.ml.wrapper import JavaEstimator, JavaTransformer
-from pyspark2pmml.wrapper import _create_java_object, _from_numberarray_map, _from_objectarray, _from_objectarray_map, _to_numberarray_map, _to_objectarray, _to_objectarray_map, JPMMLReadable
+from pyspark2pmml.wrapper import _create_java_object, _from_numberarray_map, _from_objectarray, _from_objectarray_map, _register_jpmml_class, _to_numberarray_map, _to_objectarray, _to_objectarray_map, JPMMLReadable
 
 import warnings
 
@@ -273,3 +273,13 @@ class VectorDisassembler(JavaTransformer, HasInputCol, HasOutputCols, JPMMLReada
 
 	def setOutputCols(self, value):
 		return self._set(outputCols = value)
+
+_register_jpmml_class(CategoricalDomain)
+_register_jpmml_class(CategoricalDomainModel)
+_register_jpmml_class(ContinuousDomain)
+_register_jpmml_class(ContinuousDomainModel)
+
+_register_jpmml_class(InvalidCategoryTransformer)
+_register_jpmml_class(VectorDensifier)
+_register_jpmml_class(SparseToDenseTransformer)
+_register_jpmml_class(VectorDisassembler)

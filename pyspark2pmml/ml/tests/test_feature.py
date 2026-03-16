@@ -1,6 +1,6 @@
 from pyspark2pmml.tests import PySpark2PMMLTest
 
-from pyspark.ml import Pipeline
+from pyspark.ml import Estimator, Pipeline, PipelineModel, Transformer
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
 from pyspark.sql.types import DoubleType, StringType, StructType, StructField
@@ -37,7 +37,20 @@ class FeatureTest(PySpark2PMMLTest):
 	def _checked_clone(self, obj):
 		self._check_params(obj)
 
+		# Direct persistence
 		obj = _clone(obj)
+		self._check_params(obj)
+
+		# Pipeline-mediated persistence
+		# Estimator extends Transformer, therefore it has to be probed first
+		if isinstance(obj, Estimator):
+			pipeline = _clone(Pipeline(stages = [obj]))
+			obj = pipeline.getStages()[0]
+		elif isinstance(obj, Transformer):
+			pipelineModel = _clone(PipelineModel(stages = [obj]))
+			obj = pipelineModel.stages[0]
+		else:
+			raise TypeError()
 		self._check_params(obj)
 
 		return obj
