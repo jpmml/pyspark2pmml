@@ -1,10 +1,17 @@
-from xgboost.spark import SparkXGBClassifierModel, SparkXGBRegressorModel
+from __future__ import annotations
+
+from typing import Union
+from py4j.java_gateway import JavaObject
 from pyspark2pmml.wrapper import _jvm
+from xgboost import Booster
+from xgboost.spark import SparkXGBClassifierModel, SparkXGBRegressorModel
 
 import tempfile
 import types
 
-def patch_model(model):
+XGBoostModel = Union[SparkXGBClassifierModel, SparkXGBRegressorModel]
+
+def patch_model(model: XGBoostModel) -> None:
 	if hasattr(model, "_to_java"):
 		return
 
@@ -15,7 +22,7 @@ def patch_model(model):
 
 	model._to_java = types.MethodType(_to_java, model)
 
-def toJavaModel(model):
+def toJavaModel(model: XGBoostModel) -> JavaObject:
 	jvm = _jvm()
 
 	def _construct(javaModelClass, args):
@@ -59,7 +66,7 @@ def toJavaModel(model):
 	else:
 		raise TypeError()
 
-def toJavaBooster(booster):
+def toJavaBooster(booster: Booster) -> JavaObject:
 	jvm = _jvm()
 	with tempfile.NamedTemporaryFile(suffix = ".json") as booster_file:
 		booster_path = booster_file.name
