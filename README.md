@@ -7,9 +7,13 @@ Python package for converting [Apache Spark ML](https://spark.apache.org/) pipel
 
 This package is a thin PySpark wrapper for the [JPMML-SparkML](https://github.com/jpmml/jpmml-sparkml#features) library.
 
+# News and Updates #
+
+See the [NEWS.md](https://github.com/jpmml/pyspark2pmml/blob/master/NEWS.md) file.
+
 # Prerequisites #
 
-* Apache Spark 3.0.X through 3.5.X, 4.0.X or 4.1.X.
+* PySpark 3.0.X through 3.5.X, 4.0.X or 4.1.X.
 * Python 3.8 or newer.
 
 # Installation #
@@ -26,7 +30,10 @@ Alternatively, install the latest snapshot version from GitHub:
 pip install --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 ```
 
-# Configuration and usage #
+# Configuration #
+
+One and the same PySpark2PMML version works across all supported PySpark release lines.
+Version variance is confined to the underlying JPMML-SparkML library, where each Apache Spark release line maps to a dedicated JPMML-SparkML release line.
 
 PySpark2PMML must be paired with JPMML-SparkML based on the following compatibility matrix:
 
@@ -49,6 +56,14 @@ Stale development branches:
 | 3.3.X | [`2.3.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.3.X) | 2.3.5 |
 | 3.4.X | [`2.4.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.4.X) | 2.4.4 |
 | 3.5.X | [`2.5.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.5.X) | 2.5.3 |
+
+PySpark2PMML Python APIs are simple and stable in time.
+If the package has not been updated for months or even a year, then this does not mean that it has fallen behind JPMML-SparkML development in any way.
+
+Quite the contrary.
+The latest PySpark2PMML package version should be fully interoperable with any and all JPMML-SparkML library versions that have been released since that time.
+
+# Usage #
 
 Launch PySpark; use the `--packages` command-line option to specify the coordinates of relevant JPMML-SparkML modules:
 
