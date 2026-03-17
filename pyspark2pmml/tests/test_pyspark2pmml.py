@@ -30,7 +30,7 @@ class PySparkTest(PySpark2PMMLTest):
 		pipeline = Pipeline(stages = [formula, classifier])
 		pipelineModel = pipeline.fit(df)
 		
-		pmmlBuilder = PMMLBuilder(df, pipelineModel) \
+		pmmlBuilder = PMMLBuilder(df.schema, pipelineModel) \
 			.verify(df.sample(False, 0.1))
 
 		pmml = pmmlBuilder.build()
@@ -111,7 +111,7 @@ class XGBoostTest(PySpark2PMMLTest):
 
 		patch_model(classifierModel)
 
-		pmmlBuilder = PMMLBuilder(df, pipelineModel)
+		pmmlBuilder = PMMLBuilder(df.schema, pipelineModel)
 
 		pmmlString = pmmlBuilder.buildString()
 		self.assertTrue(_pmml_element in pmmlString)

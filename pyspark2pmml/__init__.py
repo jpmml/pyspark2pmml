@@ -1,14 +1,21 @@
 from py4j.java_gateway import JavaClass
+from pyspark.sql import DataFrame
+from pyspark.sql.types import StructType
 from pyspark2pmml.wrapper import _jvm
 
 from .metadata import __copyright__, __license__, __version__
 
 class PMMLBuilder(object):
 
-	def __init__(self, df, pipelineModel):
+	def __init__(self, schema, pipelineModel):
 		jvm = _jvm()
-		javaDf = df._jdf
-		javaSchema = javaDf.schema()
+		if isinstance(schema, StructType):
+			javaSchema = jvm.org.apache.spark.sql.types.DataType.fromJson(schema.json())
+		elif isinstance(schema, DataFrame):
+			javaDf = schema._jdf
+			javaSchema = javaDf.schema()
+		else:
+			raise TypeError("Schema is not a StructType or DataFrame")
 		javaPipelineModel = pipelineModel._to_java()
 		javaPmmlBuilderClass = jvm.org.jpmml.sparkml.PMMLBuilder
 		if not isinstance(javaPmmlBuilderClass, JavaClass):
