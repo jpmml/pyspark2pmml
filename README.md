@@ -82,7 +82,7 @@ Exporting the fitted Spark ML pipeline to a PMML file:
 ```python
 from pyspark2pmml import PMMLBuilder
 
-pmmlBuilder = PMMLBuilder(sc, df, pipelineModel)
+pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 pmmlBuilder.buildFile("DecisionTreeIris.pmml")
 ```
@@ -94,7 +94,7 @@ from pyspark2pmml import PMMLBuilder
 
 classifierModel = pipelineModel.stages[1]
 
-pmmlBuilder = PMMLBuilder(sc, df, pipelineModel) \
+pmmlBuilder = PMMLBuilder(df, pipelineModel) \
 	.putOption(classifierModel, "compact", False) \
 	.putOption(classifierModel, "estimate_featureImportances", True)
 

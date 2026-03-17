@@ -31,7 +31,7 @@ class PySparkTest(PySpark2PMMLTest):
 		pipeline = Pipeline(stages = [formula, classifier])
 		pipelineModel = pipeline.fit(df)
 		
-		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel) \
+		pmmlBuilder = PMMLBuilder(df, pipelineModel) \
 			.verify(df.sample(False, 0.1))
 
 		pmml = pmmlBuilder.build()
@@ -72,7 +72,7 @@ class PySparkTest(PySpark2PMMLTest):
 		pipeline = Pipeline(stages = [classifier])
 		pipelineModel = pipeline.fit(df)
 
-		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+		pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 		pmmlString = pmmlBuilder.buildString()
 		self.assertTrue(_pmml_element in pmmlString)
@@ -106,13 +106,13 @@ class XGBoostTest(PySpark2PMMLTest):
 		pipelineModel = pipeline.fit(df)
 
 		with self.assertRaises(AttributeError):
-			pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+			pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 		classifierModel = pipelineModel.stages[-1]
 
-		patch_model(self.sc, classifierModel)
+		patch_model(classifierModel)
 
-		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+		pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 		pmmlString = pmmlBuilder.buildString()
 		self.assertTrue(_pmml_element in pmmlString)
@@ -130,13 +130,13 @@ class XGBoostTest(PySpark2PMMLTest):
 		pipelineModel = pipeline.fit(df)
 
 		with self.assertRaises(AttributeError):
-			pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+			pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 		regressorModel = pipelineModel.stages[-1]
 
-		patch_model(self.sc, regressorModel)
+		patch_model(regressorModel)
 
-		pmmlBuilder = PMMLBuilder(self.sc, df, pipelineModel)
+		pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 		pmmlString = pmmlBuilder.buildString()
 		self.assertTrue(_pmml_element in pmmlString)

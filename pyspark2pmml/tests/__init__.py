@@ -25,8 +25,6 @@ class PySpark2PMMLTest(TestCase):
 			.master("local[2]") \
 			.getOrCreate()
 
-		cls.sc = cls.spark.sparkContext
-
 	@classmethod
 	def tearDownClass(cls):
 		cls.spark.stop()
