@@ -16,6 +16,9 @@ class PMMLBuilder(object):
 
 	def __init__(self, schema: Union[StructType, DataFrame], pipelineStage: Transformer) -> None:
 		jvm = _jvm()
+		javaPmmlBuilderClass = jvm.org.jpmml.sparkml.PMMLBuilder
+		if not isinstance(javaPmmlBuilderClass, JavaClass):
+			raise RuntimeError("JPMML-SparkML not found on classpath")
 		if isinstance(schema, StructType):
 			javaSchema = jvm.org.apache.spark.sql.types.DataType.fromJson(schema.json())
 		elif isinstance(schema, DataFrame):
@@ -27,9 +30,6 @@ class PMMLBuilder(object):
 			javaPipelineStage = pipelineStage._to_java()
 		else:
 			raise TypeError("Pipeline stage is not a Transformer")
-		javaPmmlBuilderClass = jvm.org.jpmml.sparkml.PMMLBuilder
-		if not isinstance(javaPmmlBuilderClass, JavaClass):
-			raise RuntimeError("JPMML-SparkML not found on classpath")
 		javaPmmlBuilder = javaPmmlBuilderClass(javaSchema, javaPipelineStage)
 		self.javaPmmlBuilder = javaPmmlBuilder
 

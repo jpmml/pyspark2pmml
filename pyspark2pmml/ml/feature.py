@@ -6,38 +6,6 @@ from pyspark2pmml.wrapper import _create_java_object, _jvm, _register_jpmml_clas
 
 import warnings
 
-def _to_objectarray(py_values):
-	jvm = _jvm()
-	return jvm.java.util.ArrayList(list(py_values)).toArray()
-
-def _from_objectarray(java_values):
-	return list(java_values)
-
-def _to_objectarray_map(py_map):
-	jvm = _jvm()
-	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toObjectArrayMap(py_map)
-	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
-	return scala_map
-
-def _to_numberarray_map(py_map):
-	jvm = _jvm()
-	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toNumberArrayMap(py_map)
-	scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
-	return scala_map
-
-def _from_array_map(scala_map):
-	jvm = _jvm()
-	java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toJavaMap(scala_map)
-	py_map = {k : list(v) for k, v in jvm.org.jpmml.sparkml.feature.DomainUtil.toListMap(java_map).items()}
-	return py_map
-
-def _from_objectarray_map(scala_map):
-	return _from_array_map(scala_map)
-
-def _from_numberarray_map(scala_map):
-	return _from_array_map(scala_map)
-
-
 class HasDomainParams(HasInputCols, HasOutputCols):
 
 	missingValues = Param(Params._dummy(), "missingValues", "")
@@ -47,17 +15,6 @@ class HasDomainParams(HasInputCols, HasOutputCols):
 	invalidValueReplacement = Param(Params._dummy(), "invalidValueReplacement", "")
 
 	withData = Param(Params._dummy(), "withData", "", typeConverter = TypeConverters.toBoolean)
-
-	_param_formatters = {
-		"missingValues" : _to_objectarray,
-		"dataRanges" : _to_numberarray_map,
-		"dataValues" : _to_objectarray_map
-	}
-	_param_parsers = {
-		"missingValues" : _from_objectarray,
-		"dataRanges" : _from_numberarray_map,
-		"dataValues" : _from_objectarray_map
-	}
 
 	def __init__(self):
 		super().__init__()
@@ -118,6 +75,49 @@ class HasDomainParams(HasInputCols, HasOutputCols):
 
 	def setWithData(self, value):
 		return self._set(withData = value)
+
+	def _to_objectarray(py_values):
+		jvm = _jvm()
+		return jvm.java.util.ArrayList(list(py_values)).toArray()
+
+	def _from_objectarray(java_values):
+		return list(java_values)
+
+	def _to_objectarray_map(py_map):
+		jvm = _jvm()
+		java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toObjectArrayMap(py_map)
+		scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
+		return scala_map
+
+	def _to_numberarray_map(py_map):
+		jvm = _jvm()
+		java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toNumberArrayMap(py_map)
+		scala_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toScalaMap(java_map)
+		return scala_map
+
+	def _from_array_map(scala_map):
+		jvm = _jvm()
+		java_map = jvm.org.jpmml.sparkml.feature.DomainUtil.toJavaMap(scala_map)
+		py_map = {k : list(v) for k, v in jvm.org.jpmml.sparkml.feature.DomainUtil.toListMap(java_map).items()}
+		return py_map
+
+	def _from_objectarray_map(scala_map):
+		return HasDomainParams._from_array_map(scala_map)
+
+	def _from_numberarray_map(scala_map):
+		return HasDomainParams._from_array_map(scala_map)
+
+	_param_formatters = {
+		"missingValues" : _to_objectarray,
+		"dataRanges" : _to_numberarray_map,
+		"dataValues" : _to_objectarray_map
+	}
+
+	_param_parsers = {
+		"missingValues" : _from_objectarray,
+		"dataRanges" : _from_numberarray_map,
+		"dataValues" : _from_objectarray_map
+	}
 
 class HasCategoricalDomainParams(HasDomainParams):
 
