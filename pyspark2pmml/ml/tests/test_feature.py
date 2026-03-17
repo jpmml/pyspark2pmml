@@ -1,24 +1,11 @@
-from pyspark2pmml.tests import PySpark2PMMLTest
-
 from pyspark.ml import Estimator, Pipeline, PipelineModel, Transformer
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
 from pyspark.sql.types import DoubleType, StringType, StructType, StructField
+from pyspark2pmml.tests import _clone, PySpark2PMMLTest
 from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, VectorDensifier, VectorDisassembler
-from tempfile import TemporaryDirectory
 
 import math
-
-def _clone(obj):
-	with TemporaryDirectory() as tmpDir:
-		obj.write() \
-			.overwrite() \
-			.save(tmpDir)
-
-		cloned_obj = type(obj) \
-			.load(tmpDir)
-
-		return cloned_obj
 
 def _escape_df(df):
 	def _escape_row(row):

@@ -1,4 +1,5 @@
 from pyspark.sql import SparkSession
+from tempfile import TemporaryDirectory
 from unittest import TestCase
 
 import os
@@ -15,6 +16,17 @@ if JPMML_SPARKML_JARS or JPMML_SPARKML_PACKAGES:
 	submit_args.append("pyspark-shell")
 
 	os.environ['PYSPARK_SUBMIT_ARGS'] = " ".join(submit_args)
+
+def _clone(obj):
+	with TemporaryDirectory() as tmpDir:
+		obj.write() \
+			.overwrite() \
+			.save(tmpDir)
+
+		cloned_obj = type(obj) \
+			.load(tmpDir)
+
+		return cloned_obj
 
 class PySpark2PMMLTest(TestCase):
 

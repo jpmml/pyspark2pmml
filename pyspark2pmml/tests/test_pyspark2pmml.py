@@ -1,11 +1,10 @@
-from pyspark2pmml.tests import JPMML_SPARKML_JARS, JPMML_SPARKML_PACKAGES, PySpark2PMMLTest
-
 from functools import wraps
 from py4j.java_gateway import JavaObject
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
 from pyspark2pmml import PMMLBuilder
+from pyspark2pmml.tests import JPMML_SPARKML_JARS, JPMML_SPARKML_PACKAGES, PySpark2PMMLTest
 from unittest import SkipTest
 
 import os
