@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from numbers import Number
 from py4j.java_gateway import JavaClass, JavaObject
-from pyspark.ml import Estimator, Transformer
+from pyspark.ml import Transformer
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType
 from pyspark2pmml.wrapper import _jvm
@@ -10,12 +10,11 @@ from typing import List, Optional, Union
 
 from .metadata import __copyright__, __license__, __version__
 
-PipelineStage = Union[Estimator, Transformer]
 PMML = JavaObject
 
 class PMMLBuilder(object):
 
-	def __init__(self, schema: Union[StructType, DataFrame], pipelineStage: PipelineStage) -> None:
+	def __init__(self, schema: Union[StructType, DataFrame], pipelineStage: Transformer) -> None:
 		jvm = _jvm()
 		if isinstance(schema, StructType):
 			javaSchema = jvm.org.apache.spark.sql.types.DataType.fromJson(schema.json())
@@ -24,7 +23,10 @@ class PMMLBuilder(object):
 			javaSchema = javaDf.schema()
 		else:
 			raise TypeError("Schema is not a StructType or DataFrame")
-		javaPipelineStage = pipelineStage._to_java()
+		if isinstance(pipelineStage, Transformer):
+			javaPipelineStage = pipelineStage._to_java()
+		else:
+			raise TypeError("Pipeline stage is not a Transformer")
 		javaPmmlBuilderClass = jvm.org.jpmml.sparkml.PMMLBuilder
 		if not isinstance(javaPmmlBuilderClass, JavaClass):
 			raise RuntimeError("JPMML-SparkML not found on classpath")
@@ -46,7 +48,7 @@ class PMMLBuilder(object):
 		javaFile = self.javaPmmlBuilder.buildFile(javaFile)
 		return javaFile.getAbsolutePath()
 
-	def putOption(self, pipelineStage: Optional[PipelineStage], key: str, value: Union[str, Number]) -> PMMLBuilder:
+	def putOption(self, pipelineStage: Optional[Transformer], key: str, value: Union[str, Number]) -> PMMLBuilder:
 		if pipelineStage is None:
 			self.javaPmmlBuilder.putOption(key, value)
 		else:
