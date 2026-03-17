@@ -38,10 +38,7 @@ def _from_numberarray_map(scala_map):
 	return _from_array_map(scala_map)
 
 
-class HasDomainParams(Params):
-
-	inputCols = Param(Params._dummy(), "inputCols", "", typeConverter = TypeConverters.toListString)
-	outputCols = Param(Params._dummy(), "outputCols", "", typeConverter = TypeConverters.toListString)
+class HasDomainParams(HasInputCols, HasOutputCols):
 
 	missingValues = Param(Params._dummy(), "missingValues", "")
 	missingValueTreatment = Param(Params._dummy(), "missingValueTreatment", "", typeConverter = TypeConverters.toString)
@@ -173,7 +170,7 @@ class HasContinuousDomainParams(HasDomainParams):
 	def setDataRanges(self, value):
 		return self._set(dataRanges = value)
 
-class DomainParamsMixin:
+class _JavaDomainParams:
 
 	def _make_java_param_pair(self, param, value):
 		param_formatter = HasDomainParams._param_formatters.get(param.name, None)
@@ -193,11 +190,11 @@ class DomainParamsMixin:
 			if param in self._defaultParamMap and self._defaultParamMap[param] is not None:
 				self._defaultParamMap[param] = param_parser(self._defaultParamMap[param])
 
-class Domain(DomainParamsMixin, JavaEstimator, JPMMLReadable, JavaMLWritable):
+class Domain(_JavaDomainParams, JavaEstimator, HasDomainParams, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.Domain"
 
-class DomainModel(DomainParamsMixin, JavaTransformer, JPMMLReadable, JavaMLWritable):
+class DomainModel(_JavaDomainParams, JavaTransformer, HasDomainParams, JPMMLReadable, JavaMLWritable):
 
 	_java_class_name = "org.jpmml.sparkml.feature.DomainModel"
 

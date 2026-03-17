@@ -1,6 +1,7 @@
 from pyspark.ml import Estimator, Pipeline, PipelineModel, Transformer
 from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import DenseVector, Vectors, VectorUDT
+from pyspark.ml.param.shared import HasInputCols, HasOutputCols
 from pyspark.sql.types import DoubleType, StringType, StructType, StructField
 from pyspark2pmml.tests import _clone, PySpark2PMMLTest
 from pyspark2pmml.ml.feature import CategoricalDomain, ContinuousDomain, InvalidCategoryTransformer, VectorDensifier, VectorDisassembler
@@ -79,6 +80,7 @@ class CategoricalDomainTest(DomainTest):
 
 	def test_fit_transform(self):
 		domain = CategoricalDomain()
+		self.assertIsInstance(domain, (HasInputCols, HasOutputCols))
 		self._check_default_params(domain)
 
 		schema = StructType([
@@ -171,6 +173,7 @@ class ContinuousDomainTest(DomainTest):
 
 	def test_fit_transform(self):
 		domain = ContinuousDomain()
+		self.assertIsInstance(domain, (HasInputCols, HasOutputCols))
 		self._check_default_params(domain)
 
 		schema = StructType([
