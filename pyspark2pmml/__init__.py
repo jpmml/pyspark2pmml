@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from numbers import Number
 from py4j.java_gateway import JavaClass, JavaObject
-from pyspark.ml import Estimator, PipelineModel, Transformer
+from pyspark.ml import Estimator, Transformer
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType
 from pyspark2pmml.wrapper import _jvm
@@ -15,7 +15,7 @@ PMML = JavaObject
 
 class PMMLBuilder(object):
 
-	def __init__(self, schema: Union[StructType, DataFrame], pipelineModel: PipelineModel) -> None:
+	def __init__(self, schema: Union[StructType, DataFrame], pipelineStage: PipelineStage) -> None:
 		jvm = _jvm()
 		if isinstance(schema, StructType):
 			javaSchema = jvm.org.apache.spark.sql.types.DataType.fromJson(schema.json())
@@ -24,11 +24,11 @@ class PMMLBuilder(object):
 			javaSchema = javaDf.schema()
 		else:
 			raise TypeError("Schema is not a StructType or DataFrame")
-		javaPipelineModel = pipelineModel._to_java()
+		javaPipelineStage = pipelineStage._to_java()
 		javaPmmlBuilderClass = jvm.org.jpmml.sparkml.PMMLBuilder
 		if not isinstance(javaPmmlBuilderClass, JavaClass):
 			raise RuntimeError("JPMML-SparkML not found on classpath")
-		javaPmmlBuilder = javaPmmlBuilderClass(javaSchema, javaPipelineModel)
+		javaPmmlBuilder = javaPmmlBuilderClass(javaSchema, javaPipelineStage)
 		self.javaPmmlBuilder = javaPmmlBuilder
 
 	def build(self) -> PMML:
