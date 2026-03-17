@@ -49,6 +49,3 @@ class PMMLBuilder(object):
 		javaDf = df._jdf
 		self.javaPmmlBuilder.verify(javaDf, precision, zeroThreshold)
 		return self
-
-def toPMMLBytes(sc, df, pipelineModel):
-	raise RuntimeError("Replace \"toPMMLBytes(sc, df, pipelineModel)\" with \"PMMLBuilder(sc, df, pipelineModel).buildByteArray()\"")
