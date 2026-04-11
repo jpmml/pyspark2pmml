@@ -41,10 +41,10 @@ Active development branches:
 
 | Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
 |----------------------|----------------------|------------------------------|
-| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.10 |
-| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.10 |
-| 4.0.X | [`3.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.2.X) | 3.2.9 |
-| 4.1.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.3.2 |
+| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.11 |
+| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.11 |
+| 4.0.X | [`3.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.2.X) | 3.2.10 |
+| 4.1.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.3.3 |
 
 Stale development branches:
 
