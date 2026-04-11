@@ -20,13 +20,13 @@ See the [NEWS.md](https://github.com/jpmml/pyspark2pmml/blob/master/NEWS.md) fil
 
 Install a release version from PyPI:
 
-```
+```bash
 pip install pyspark2pmml
 ```
 
 Alternatively, install the latest snapshot version from GitHub:
 
-```
+```bash
 pip install --upgrade git+https://github.com/jpmml/pyspark2pmml.git
 ```
 
@@ -73,8 +73,8 @@ Launch PySpark; use the `--packages` command-line option to specify the coordina
 
 Launching core:
 
-```
-pyspark --packages org.jpmml:pmml-sparkml:${version}
+```bash
+$SPARK_HOME/bin/pyspark --packages org.jpmml:pmml-sparkml:${version}
 ```
 
 Fitting a Spark ML pipeline:
