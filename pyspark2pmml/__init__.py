@@ -5,12 +5,41 @@ from py4j.java_gateway import JavaClass, JavaObject
 from pyspark.ml import Transformer
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType
+from pyspark2pmml import shared, spark34, spark35, spark40, spark41
 from pyspark2pmml.wrapper import _jvm
+from pyspark2pmml.util import load_classpath
+from types import ModuleType
 from typing import List, Optional, Union
+
+import os
+import pyspark
 
 from .metadata import __copyright__, __license__, __version__
 
 PMML = JavaObject
+
+def _spark_module(version: str) -> ModuleType:
+	if version.startswith("3.4."):
+		return spark34
+	elif version.startswith("3.5."):
+		return spark35
+	elif version.startswith("4.0."):
+		return spark40
+	elif version.startswith("4.1."):
+		return spark41
+	else:
+		raise ValueError("Apache Spark version {version} is not supported".format(version = version))
+
+def classpath(version: str = None) -> List[str]:
+	if version is None:
+		version = pyspark.__version__
+
+	spark_module = _spark_module(version)
+	spark_jars = load_classpath(os.path.dirname(spark_module.__file__))
+
+	shared_jars = load_classpath(os.path.dirname(shared.__file__))
+
+	return spark_jars + shared_jars
 
 class PMMLBuilder(object):
 

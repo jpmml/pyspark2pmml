@@ -3,9 +3,9 @@ from py4j.java_gateway import JavaObject
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
-from pyspark2pmml import PMMLBuilder
+from pyspark2pmml import classpath, PMMLBuilder
 from pyspark2pmml.tests import JPMML_SPARKML_JARS, JPMML_SPARKML_PACKAGES, PySpark2PMMLTest
-from unittest import SkipTest
+from unittest import SkipTest, TestCase
 
 import os
 import tempfile
@@ -15,10 +15,25 @@ _pmml_element = "<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http:/
 def requires_pmml_sparkml_xgboost(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		if "pmml-sparkml-example-executable" not in JPMML_SPARKML_JARS and "pmml-sparkml-xgboost" not in JPMML_SPARKML_PACKAGES:
+		if "xgboost4j-spark_2." not in JPMML_SPARKML_JARS and "xgboost4j-spark_2" not in JPMML_SPARKML_PACKAGES:
 			raise SkipTest()
 		return func(*args, **kwargs)
 	return wrapper
+
+class ClasspathTest(TestCase):
+
+	def testClasspath(self):
+		spark34_jars = classpath("3.4.")
+		spark35_jars = classpath("3.5.")
+		spark40_jars = classpath("4.0.")
+		spark41_jars = classpath("4.1.")
+
+		self.assertEqual(3 + 15, len(spark34_jars))
+		self.assertEqual(3 + 15, len(spark35_jars))
+		self.assertEqual(3 + 15, len(spark40_jars))
+		self.assertEqual(3 + 15, len(spark41_jars))
+		self.assertNotEqual(set(spark34_jars[0:3]), set(spark41_jars[0:3]))
+		self.assertEqual(set(spark34_jars[3:]), set(spark41_jars[3:]))
 
 class PySparkTest(PySpark2PMMLTest):
 

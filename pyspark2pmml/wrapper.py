@@ -1,8 +1,9 @@
 from pyspark import SparkContext
 from pyspark.ml.util import MLReadable, MLReader
+from pyspark2pmml import shared, spark34, spark35, spark40, spark41
+from types import ModuleType
 
 import sys
-import types
 
 def _jvm():
 	return SparkContext._jvm
@@ -12,7 +13,7 @@ def _ensure_module(module_path):
 	for i in range(len(segments)):
 		path = ".".join(segments[:i + 1])
 		if path not in sys.modules:
-			sys.modules[path] = types.ModuleType(path)
+			sys.modules[path] = ModuleType(path)
 		if i > 0:
 			parent_path = ".".join(segments[:i])
 			setattr(sys.modules[parent_path], segments[i], sys.modules[path])

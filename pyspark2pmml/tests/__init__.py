@@ -1,4 +1,5 @@
 from pyspark.sql import SparkSession
+from pyspark2pmml import classpath
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
@@ -35,6 +36,7 @@ class PySpark2PMMLTest(TestCase):
 		cls.spark = SparkSession.builder \
 			.appName("PMMLTest") \
 			.master("local[2]") \
+			.config("spark.jars", ",".join(classpath())) \
 			.getOrCreate()
 
 	@classmethod
