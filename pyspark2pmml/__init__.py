@@ -7,7 +7,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType
 from pyspark2pmml import shared, spark34, spark35, spark40, spark41
 from pyspark2pmml.wrapper import _jvm
-from pyspark2pmml.util import load_jars
+from pyspark2pmml.util import load_jars, load_jars_packages
 from types import ModuleType
 from typing import List, Optional, Union
 
@@ -38,8 +38,18 @@ def _jars(version: str = None) -> List[str]:
 	shared_jars = load_jars(os.path.dirname(shared.__file__))
 	return spark_jars + shared_jars
 
+def _jars_packages(version: str = None) -> List[str]:
+	if version is None:
+		version = pyspark.__version__
+	spark_module = _spark_module(version)
+	spark_jars_packages = load_jars_packages(os.path.dirname(spark_module.__file__))
+	return spark_jars_packages
+
 def spark_jars(version: str = None) -> str:
 	return ",".join(_jars(version = version))
+
+def spark_jars_packages(version: str = None) -> str:
+	return ",".join(_jars_packages(version = version))
 
 class PMMLBuilder(object):
 

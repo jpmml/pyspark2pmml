@@ -3,7 +3,7 @@ from py4j.java_gateway import JavaObject
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
-from pyspark2pmml import _jars, PMMLBuilder
+from pyspark2pmml import spark_jars, spark_jars_packages, PMMLBuilder
 from pyspark2pmml.tests import PySpark2PMMLTest
 from pyspark2pmml.wrapper import _jvm
 from py4j.java_gateway import JavaClass
@@ -27,10 +27,10 @@ def requires_pmml_sparkml_xgboost(func):
 class ConfigurationTest(TestCase):
 
 	def testJars(self):
-		spark34_jars = _jars("3.4.")
-		spark35_jars = _jars("3.5.")
-		spark40_jars = _jars("4.0.")
-		spark41_jars = _jars("4.1.")
+		spark34_jars = spark_jars("3.4.").split(",")
+		spark35_jars = spark_jars("3.5.").split(",")
+		spark40_jars = spark_jars("4.0.").split(",")
+		spark41_jars = spark_jars("4.1.").split(",")
 
 		self.assertEqual(3 + 15, len(spark34_jars))
 		self.assertEqual(3 + 15, len(spark35_jars))
@@ -38,6 +38,17 @@ class ConfigurationTest(TestCase):
 		self.assertEqual(3 + 15, len(spark41_jars))
 		self.assertNotEqual(set(spark34_jars[0:3]), set(spark41_jars[0:3]))
 		self.assertEqual(set(spark34_jars[3:]), set(spark41_jars[3:]))
+
+	def testJarsPackages(self):
+		spark34_jars_packages = spark_jars_packages("3.4.").split(",")
+		spark35_jars_packages = spark_jars_packages("3.5.").split(",")
+		spark40_jars_packages = spark_jars_packages("4.0.").split(",")
+		spark41_jars_packages = spark_jars_packages("4.1.").split(",")
+
+		self.assertEqual(3, len(spark34_jars_packages))
+		self.assertEqual(3, len(spark35_jars_packages))
+		self.assertEqual(3, len(spark40_jars_packages))
+		self.assertEqual(3, len(spark41_jars_packages))
 
 class PySparkTest(PySpark2PMMLTest):
 
