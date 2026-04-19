@@ -37,45 +37,49 @@ Version variance is confined to the underlying JPMML-SparkML library, where each
 
 PySpark2PMML must be paired with JPMML-SparkML based on the following compatibility matrix:
 
-Active development branches:
-
 | Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
 |----------------------|----------------------|------------------------------|
-| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.11 |
-| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.11 |
-| 4.0.X | [`3.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.2.X) | 3.2.10 |
 | 4.1.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.3.3 |
+| 4.0.X | [`3.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.2.X) | 3.2.10 |
+| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.11 |
+| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.11 |
 
-Stale development branches:
+Additionally, PySpark2PMML should be interoperable with now-legacy Apache Spark 3.0 through 3.3 release lines.
+Please see the JPMML-SparkML documentation for extended compatibility matrices.
 
-| Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
-|----------------------|----------------------|------------------------------|
-| 3.0.X | [`2.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.0.X) | 2.0.6 |
-| 3.1.X | [`2.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.1.X) | 2.1.6 |
-| 3.2.X | [`2.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.2.X) | 2.2.6 |
-| 3.3.X | [`2.3.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.3.X) | 2.3.5 |
-| 3.4.X | [`2.4.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.4.X) | 2.4.4 |
-| 3.5.X | [`2.5.X`](https://github.com/jpmml/jpmml-sparkml/tree/2.5.X) | 2.5.3 |
+## Local setup
 
-PySpark2PMML Python APIs are simple and stable in time.
-If the package has not been updated for months or even a year, then this does not mean that it has fallen behind JPMML-SparkML development in any way.
+PySpark2PMML version 0.11.0 and newer bundle JPMML-SparkML JAR files for quick programmatic setup.
 
-Quite the contrary.
-The latest PySpark2PMML package version should be fully interoperable with any and all JPMML-SparkML library versions that have been released since that time.
+Use the `pyspark2pmml.spark_jars()` utility function to obtain a PySpark-version dependent classpath string, and pass it as `spark.jars` configuration entry when building a Spark session:
 
-# Usage #
+```python
+from pyspark.sql import SparkSession
 
-Launch PySpark; use the `--packages` command-line option to specify the coordinates of relevant JPMML-SparkML modules:
+import pyspark2pmml
 
-* `org.jpmml:pmml-sparkml:${version}` - Core module.
-* `org.jpmml:pmml-sparkml-lightgbm:${version}` - LightGBM via SynapseML extension module.
-* `org.jpmml:pmml-sparkml-xgboost:${version}` - XGBoost via XGBoost4J-Spark extension module.
+spark = SparkSession.builder \
+	.config("spark.jars", pyspark2pmml.spark_jars()) \
+	.getOrCreate()
+```
 
-Launching core:
+## Cluster setup
+
+Use the `pyspark2pmml.spark_jars_packages()` utility function to obtain a PySpark-version dependent Apache Maven package coordinates string:
+
+```python
+import pyspark2pmml
+
+print(pyspark2pmml.spark_jars_packages())
+```
+
+Pass this value to `pyspark` or `spark-submit` using the `--packages` command-line option:
 
 ```bash
-$SPARK_HOME/bin/pyspark --packages org.jpmml:pmml-sparkml:${version}
+$SPARK_HOME/bin/pyspark --packages $(python -c "import pyspark2pmml; print(pyspark2pmml.spark_jars_packages())")
 ```
+
+# Usage #
 
 Fitting a Spark ML pipeline:
 
