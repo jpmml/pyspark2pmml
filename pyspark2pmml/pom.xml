@@ -101,6 +101,75 @@
 	</dependencyManagement>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>3.10.0</version>
+					<executions>
+						<execution>
+							<id>list-dependencies</id>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>list</goal>
+							</goals>
+							<configuration>
+								<outputFile>resources/packages.txt</outputFile>
+								<includeScope>compile</includeScope>
+								<excludeTransitive>true</excludeTransitive>
+							</configuration>
+						</execution>
+						<execution>
+							<id>copy-dependencies</id>
+							<phase>package</phase>
+							<goals>
+								<goal>copy-dependencies</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>resources</outputDirectory>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>3.2.0</version>
+					<executions>
+						<execution>
+							<phase>generate-resources</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<target>
+									<replaceregexp
+										file="resources/packages.txt"
+										match="^The following files have been resolved:\n"
+										replace=""
+										byline="false"
+									/>
+									<replaceregexp
+										file="resources/packages.txt"
+										match="^\s+([\w.]+:[\w.-]+):jar:([\w.-]+):compile.*$"
+										replace="\1:\2"
+										byline="true"
+									/>
+									<replaceregexp
+										file="resources/packages.txt"
+										match="\s+$"
+										replace="&#10;"
+										byline="false"
+									/>
+								</target>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -116,22 +185,6 @@
 						</fileset>
 					</filesets>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.10.0</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>resources</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

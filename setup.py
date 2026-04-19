@@ -22,7 +22,7 @@ setup(
 	],
 	packages = find_packages(exclude = ["*.tests.*", "*.tests"]),
 	package_data = {
-		"" : ["resources/*.jar"],
+		"" : ["resources/packages.txt", "resources/*.jar"],
 	},
 	exclude_package_data = {
 		"" : ["README.md"],

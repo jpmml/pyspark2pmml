@@ -1,0 +1,3 @@
+org.jpmml:pmml-converter:1.6.9
+org.jpmml:pmml-lightgbm:1.6.5
+org.jpmml:pmml-xgboost:1.9.6

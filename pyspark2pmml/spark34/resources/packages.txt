@@ -1,0 +1,3 @@
+org.jpmml:pmml-sparkml:3.0.11
+org.jpmml:pmml-sparkml-lightgbm:3.0.11
+org.jpmml:pmml-sparkml-xgboost:3.0.11
