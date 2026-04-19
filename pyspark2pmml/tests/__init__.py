@@ -5,19 +5,6 @@ from unittest import TestCase
 
 import os
 
-JPMML_SPARKML_JARS = os.environ.get("JPMML_SPARKML_JARS", "")
-JPMML_SPARKML_PACKAGES = os.environ.get("JPMML_SPARKML_PACKAGES", "")
-
-if JPMML_SPARKML_JARS or JPMML_SPARKML_PACKAGES:
-	submit_args = []
-	if JPMML_SPARKML_JARS:
-		submit_args.append("--jars {}".format(JPMML_SPARKML_JARS))
-	if JPMML_SPARKML_PACKAGES:
-		submit_args.append("--packages {}".format(JPMML_SPARKML_PACKAGES))
-	submit_args.append("pyspark-shell")
-
-	os.environ['PYSPARK_SUBMIT_ARGS'] = " ".join(submit_args)
-
 def _clone(obj):
 	with TemporaryDirectory() as tmpDir:
 		obj.write() \

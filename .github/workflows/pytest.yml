@@ -14,22 +14,20 @@ jobs:
         include:
           - python: '3.9'
             pyspark: '3.4.4'
+            pyspark-packages: 'ml.dmlc:xgboost4j-spark_2.12:2.1.4'
             xgboost: '2.1.4'
             java: '11'
-            jpmml-sparkml-packages: 'ml.dmlc:xgboost4j-spark_2.12:2.1.4'
           - python: '3.11'
             pyspark: '3.5.8'
+            pyspark-packages: 'ml.dmlc:xgboost4j-spark_2.12:3.1.0'
             xgboost: '3.1.0'
             java: '11'
-            jpmml-sparkml-packages: 'ml.dmlc:xgboost4j-spark_2.12:3.1.0'
           - python: '3.11'
             pyspark: '4.0.0'
             java: '17'
-            jpmml-sparkml-packages: ''
           - python: '3.11'
             pyspark: '4.1.1'
             java: '17'
-            jpmml-sparkml-packages: ''
 
     steps:
     - uses: actions/checkout@v4
@@ -45,9 +43,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest
         pip install numpy pyspark==${{ matrix.pyspark }}
-        if [ -n "${{ matrix.xgboost }}" ]; then pip install pandas pyarrow scikit-learn xgboost==${{ matrix.xgboost }}; fi
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -n "${{ matrix.pyspark-packages }}" ]; then
+            echo "PYSPARK_SUBMIT_ARGS=--packages ${{ matrix.pyspark-packages }} pyspark-shell" >> $GITHUB_ENV
+        fi
+        if [ -n "${{ matrix.xgboost }}" ]; then
+            pip install pandas pyarrow scikit-learn xgboost==${{ matrix.xgboost }}
+        fi
+        if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+        fi
     - run: |
         python -m pytest
-      env:
-        JPMML_SPARKML_PACKAGES: ${{ matrix.jpmml-sparkml-packages }}

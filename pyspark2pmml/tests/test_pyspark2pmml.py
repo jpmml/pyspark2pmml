@@ -3,8 +3,9 @@ from py4j.java_gateway import JavaObject
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
+from pyspark.sql import SparkSession
 from pyspark2pmml import classpath, PMMLBuilder
-from pyspark2pmml.tests import JPMML_SPARKML_JARS, JPMML_SPARKML_PACKAGES, PySpark2PMMLTest
+from pyspark2pmml.tests import PySpark2PMMLTest
 from unittest import SkipTest, TestCase
 
 import os
@@ -15,7 +16,10 @@ _pmml_element = "<PMML xmlns=\"http://www.dmg.org/PMML-4_4\" xmlns:data=\"http:/
 def requires_pmml_sparkml_xgboost(func):
 	@wraps(func)
 	def wrapper(*args, **kwargs):
-		if "xgboost4j-spark_2." not in JPMML_SPARKML_JARS and "xgboost4j-spark_2" not in JPMML_SPARKML_PACKAGES:
+		spark = SparkSession.getActiveSession()
+
+		jars = spark.conf.get("spark.jars", "")
+		if "xgboost4j-spark_2." not in jars:
 			raise SkipTest()
 		return func(*args, **kwargs)
 	return wrapper
