@@ -7,7 +7,7 @@ from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType
 from pyspark2pmml import shared, spark34, spark35, spark40, spark41
 from pyspark2pmml.wrapper import _jvm
-from pyspark2pmml.util import load_classpath
+from pyspark2pmml.util import load_jars
 from types import ModuleType
 from typing import List, Optional, Union
 
@@ -30,16 +30,16 @@ def _spark_module(version: str) -> ModuleType:
 	else:
 		raise ValueError("Apache Spark version {version} is not supported".format(version = version))
 
-def classpath(version: str = None) -> List[str]:
+def _jars(version: str = None) -> List[str]:
 	if version is None:
 		version = pyspark.__version__
-
 	spark_module = _spark_module(version)
-	spark_jars = load_classpath(os.path.dirname(spark_module.__file__))
-
-	shared_jars = load_classpath(os.path.dirname(shared.__file__))
-
+	spark_jars = load_jars(os.path.dirname(spark_module.__file__))
+	shared_jars = load_jars(os.path.dirname(shared.__file__))
 	return spark_jars + shared_jars
+
+def spark_jars(version: str = None) -> str:
+	return ",".join(_jars(version = version))
 
 class PMMLBuilder(object):
 

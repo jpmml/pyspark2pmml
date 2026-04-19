@@ -3,7 +3,7 @@ from py4j.java_gateway import JavaObject
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import DecisionTreeClassifier
 from pyspark.ml.feature import RFormula
-from pyspark2pmml import classpath, PMMLBuilder
+from pyspark2pmml import _jars, PMMLBuilder
 from pyspark2pmml.tests import PySpark2PMMLTest
 from pyspark2pmml.wrapper import _jvm
 from py4j.java_gateway import JavaClass
@@ -24,13 +24,13 @@ def requires_pmml_sparkml_xgboost(func):
 		return func(*args, **kwargs)
 	return wrapper
 
-class ClasspathTest(TestCase):
+class ConfigurationTest(TestCase):
 
-	def testClasspath(self):
-		spark34_jars = classpath("3.4.")
-		spark35_jars = classpath("3.5.")
-		spark40_jars = classpath("4.0.")
-		spark41_jars = classpath("4.1.")
+	def testJars(self):
+		spark34_jars = _jars("3.4.")
+		spark35_jars = _jars("3.5.")
+		spark40_jars = _jars("4.0.")
+		spark41_jars = _jars("4.1.")
 
 		self.assertEqual(3 + 15, len(spark34_jars))
 		self.assertEqual(3 + 15, len(spark35_jars))

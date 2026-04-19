@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark2pmml import classpath
+from pyspark2pmml import spark_jars
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 
@@ -23,7 +23,7 @@ class PySpark2PMMLTest(TestCase):
 		cls.spark = SparkSession.builder \
 			.appName("PMMLTest") \
 			.master("local[2]") \
-			.config("spark.jars", ",".join(classpath())) \
+			.config("spark.jars", spark_jars()) \
 			.getOrCreate()
 
 	@classmethod
