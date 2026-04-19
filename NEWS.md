@@ -1,3 +1,35 @@
+# 0.11.0 #
+
+## Breaking changes
+
+None.
+
+## New features
+
+* Bundled JPMML-SparkML library JARs for Apache Spark 3.4, 3.5, 4.0 and 4.1.
+The package is now fully self-contained - no need to manually locate, download and manage JPMML-SparkML dependencies anymore.
+
+* Added `pyspark2pmml.spark_jars()` utility function for local programmatic setup.
+Returns a `spark.jars`-compatible classpath string for the current PySpark version.
+
+```python
+from pyspark.sql import SparkSession
+
+import pyspark2pmml
+
+spark = SparkSession.builder \
+	.config("spark.jars", pyspark2pmml.spark_jars()) \
+	.getOrCreate()
+```
+
+* Added `pyspark2pmml.spark_jars_packages()` utility function for cluster setup.
+Returns a `spark.jars.packages`-compatible Apache Maven package coordinates string for the current PySpark version.
+
+## Minor improvements and fixes
+
+None.
+
+
 # 0.10.0 #
 
 ## Breaking changes
