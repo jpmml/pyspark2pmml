@@ -11,9 +11,9 @@
 	<artifactId>pyspark2pmml-shared</artifactId>
 
 	<properties>
-		<jpmml-converter.version>1.6.9</jpmml-converter.version>
-		<jpmml-lightgbm.version>1.6.5</jpmml-lightgbm.version>
-		<jpmml-xgboost.version>1.9.6</jpmml-xgboost.version>
+		<jpmml-converter.version>1.6.10</jpmml-converter.version>
+		<jpmml-lightgbm.version>1.6.6</jpmml-lightgbm.version>
+		<jpmml-xgboost.version>1.9.8</jpmml-xgboost.version>
 	</properties>
 
 	<dependencies>

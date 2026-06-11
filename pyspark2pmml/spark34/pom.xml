@@ -11,7 +11,7 @@
 	<artifactId>pyspark2pmml-spark34</artifactId>
 
 	<properties>
-		<jpmml-sparkml.version>3.0.11</jpmml-sparkml.version>
+		<jpmml-sparkml.version>3.0.12</jpmml-sparkml.version>
 	</properties>
 
 	<dependencies>
