@@ -1,11 +1,17 @@
+from pathlib import Path
 from setuptools import setup, find_packages
 
 exec(open("pyspark2pmml/metadata.py").read())
+
+long_description = (Path(__file__).parent / "README.md") \
+	.read_text(encoding = "utf-8")
 
 setup(
 	name = "pyspark2pmml",
 	version = __version__,
 	description = "Python library for converting Apache Spark ML pipelines to PMML",
+	long_description = long_description,
+	long_description_content_type = "text/markdown",
 	author = "Villu Ruusmann",
 	author_email = "villu.ruusmann@gmail.com",
 	url = "https://github.com/jpmml/pyspark2pmml",
