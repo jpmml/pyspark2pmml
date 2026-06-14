@@ -1,3 +1,43 @@
+# 0.11.1 #
+
+## Breaking changes
+
+None.
+
+## New features
+
+* Added record counts and intermediate leaf scores for XGBoost models.
+
+This functionality is available only if the underlying objective function supports it (eg. fully supported by `reg:squarederror`, partially supported by `reg:absoluteerror` and `reg:squaredlogerror`).
+
+Moreover, the record counts and intermediate leaf scores only make sense in reference to the original (ie. binary tree) layout of XGBoost models.
+
+For example, exporting the same XGBoost model first in native-looking (deep, with maximum metadata) and then in optimized (compacted, without metadata) representations:
+
+```python
+from pyspark2pmml import PMMLBuilder
+
+xgbModel = xgbPipelineModel.stages[-1]
+
+pmmlBuilder = PMMLBuilder(df.schema, xgbPipelineModel)
+
+# Native-looking representation for analysis and interpretation
+pmmlBuilder \
+	.putOption(xgbModel, "compact", False) \
+	.buildFile("XGBoost_native.pmml")
+
+# Optimized representation for scoring
+pmmlBuilder \
+	.putOption(xgbModel, "compact", True) \
+	.buildFile("XGBoost_optimized.pmml")
+```
+
+* Unwrapped the `TreeModel` element when encoding single-segment LightGBM and XGBoost models.
+
+## Minor improvements and fixes
+
+* Updated JPMML-SparkML library versions.
+
 # 0.11.0 #
 
 ## Breaking changes
