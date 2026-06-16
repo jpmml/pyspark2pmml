@@ -8,9 +8,7 @@ None.
 
 * Added record counts and intermediate leaf scores for XGBoost models.
 
-This functionality is available only if the underlying objective function supports it (eg. fully supported by `reg:squarederror`, partially supported by `reg:absoluteerror` and `reg:squaredlogerror`).
-
-Moreover, the record counts and intermediate leaf scores only make sense in reference to the original (ie. binary tree) layout of XGBoost models.
+This functionality is only available if the XGBoost model is maintained in its native (ie. binary tree) layout, and the underlying objective function supports it (eg. fully supported by `reg:squarederror`, partially supported by `reg:absoluteerror` and `reg:squaredlogerror`).
 
 For example, exporting the same XGBoost model first in native-looking (deep, with maximum metadata) and then in optimized (compacted, without metadata) representations:
 
