@@ -126,6 +126,13 @@ class PySparkTest(PySpark2PMMLTest):
 
 class XGBoostTest(PySpark2PMMLTest):
 
+	def assertTreeEnsemble(self, pmmlString):
+		self.assertTrue(_pmml_element in pmmlString)
+		self.assertTrue("<MiningModel" in pmmlString)
+		self.assertTrue("<Segmentation" in pmmlString)
+		self.assertLess(0, pmmlString.count("<TreeModel"))
+		self.assertLess(0, pmmlString.count("<Node"))
+
 	@requires_pmml_sparkml_xgboost
 	def testIris(self):
 		from pyspark2pmml.xgboost import patch_model
@@ -148,7 +155,10 @@ class XGBoostTest(PySpark2PMMLTest):
 		pmmlBuilder = PMMLBuilder(df.schema, pipelineModel)
 
 		pmmlString = pmmlBuilder.buildString()
-		self.assertTrue(_pmml_element in pmmlString)
+		self.assertTreeEnsemble(pmmlString)
+		self.assertTrue("Sepal_Length" in pmmlString)
+		self.assertTrue("Petal_Length" in pmmlString)
+		self.assertTrue("Species" in pmmlString)
 
 	@requires_pmml_sparkml_xgboost
 	def testAuto(self):
@@ -172,4 +182,6 @@ class XGBoostTest(PySpark2PMMLTest):
 		pmmlBuilder = PMMLBuilder(df, pipelineModel)
 
 		pmmlString = pmmlBuilder.buildString()
-		self.assertTrue(_pmml_element in pmmlString)
+		self.assertTreeEnsemble(pmmlString)
+		self.assertTrue("horsepower" in pmmlString)
+		self.assertTrue("mpg" in pmmlString)
