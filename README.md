@@ -9,13 +9,13 @@ This package is a thin PySpark wrapper for the [JPMML-SparkML](https://github.co
 
 # News and Updates #
 
-The current version is **0.11.1** (14 June, 2026):
+The current version is **0.12.0** (31 August, 2026):
 
 ```
-pip install pyspark2pmml==0.11.1
+pip install pyspark2pmml==0.12.0
 ```
 
-See the [NEWS.md](https://github.com/jpmml/pyspark2pmml/blob/master/NEWS.md#0111) file.
+See the [NEWS.md](https://github.com/jpmml/pyspark2pmml/blob/master/NEWS.md#0120) file.
 
 # Prerequisites #
 

@@ -1,3 +1,22 @@
+# 0.12.0 #
+
+## Breaking changes
+
+None.
+
+## New features
+
+* Added support for Apache Spark 4.2.
+
+Both `pyspark2pmml.spark_jars()` and `pyspark2pmml.spark_jars_packages()` utility functions automatically pick up the `pyspark2pmml.spark42` module when called in a PySpark 4.2 environment.
+
+## Minor improvements and fixes
+
+* Improved record counts and intermediate leaf scores for XGBoost models.
+
+* Updated JPMML-SparkML library versions.
+
+
 # 0.11.1 #
 
 ## Breaking changes
