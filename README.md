@@ -19,7 +19,7 @@ See the [NEWS.md](https://github.com/jpmml/pyspark2pmml/blob/master/NEWS.md#0111
 
 # Prerequisites #
 
-* PySpark 3.0.X through 3.5.X, 4.0.X or 4.1.X.
+* PySpark 3.0.X through 3.5.X, 4.0.X, 4.1.X or 4.2.X.
 * Python 3.8 or newer.
 * Java 8 or newer (as required by PySpark).
 
@@ -46,10 +46,11 @@ PySpark2PMML must be paired with JPMML-SparkML based on the following compatibil
 
 | Apache Spark version | JPMML-SparkML branch | Latest JPMML-SparkML version |
 |----------------------|----------------------|------------------------------|
-| 4.1.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.3.3 |
-| 4.0.X | [`3.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.2.X) | 3.2.10 |
-| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.11 |
-| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.11 |
+| 4.2.X | [`master`](https://github.com/jpmml/jpmml-sparkml/tree/master) | 3.4.0 |
+| 4.1.X | [`3.3.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.3.X) | 3.3.5 |
+| 4.0.X | [`3.2.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.2.X) | 3.2.12 |
+| 3.5.X | [`3.1.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.1.X) | 3.1.13 |
+| 3.4.X | [`3.0.X`](https://github.com/jpmml/jpmml-sparkml/tree/3.0.X) | 3.0.13 |
 
 Additionally, PySpark2PMML should be interoperable with now-legacy Apache Spark 3.0 through 3.3 release lines.
 Please see the JPMML-SparkML documentation for extended compatibility matrices.
