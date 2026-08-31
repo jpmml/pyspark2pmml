@@ -5,7 +5,7 @@ from py4j.java_gateway import JavaClass, JavaObject
 from pyspark.ml import Transformer
 from pyspark.sql import DataFrame
 from pyspark.sql.types import StructType
-from pyspark2pmml import shared, spark34, spark35, spark40, spark41
+from pyspark2pmml import shared, spark34, spark35, spark40, spark41, spark42
 from pyspark2pmml.wrapper import _jvm
 from pyspark2pmml.util import load_jars, load_jars_packages
 from types import ModuleType
@@ -27,6 +27,8 @@ def _spark_module(version: str) -> ModuleType:
 		return spark40
 	elif version.startswith("4.1."):
 		return spark41
+	elif version.startswith("4.2."):
+		return spark42
 	else:
 		raise ValueError("Apache Spark version {version} is not supported".format(version = version))
 

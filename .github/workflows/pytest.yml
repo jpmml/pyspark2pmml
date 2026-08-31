@@ -28,6 +28,9 @@ jobs:
           - python: '3.11'
             pyspark: '4.1.2'
             java: '17'
+          - python: '3.11'
+            pyspark: '4.2.0'
+            java: '17'
 
     steps:
     - uses: actions/checkout@v6

@@ -31,24 +31,28 @@ class ConfigurationTest(TestCase):
 		spark35_jars = spark_jars("3.5.").split(",")
 		spark40_jars = spark_jars("4.0.").split(",")
 		spark41_jars = spark_jars("4.1.").split(",")
+		spark42_jars = spark_jars("4.2.").split(",")
 
 		self.assertEqual(3 + 15, len(spark34_jars))
 		self.assertEqual(3 + 15, len(spark35_jars))
 		self.assertEqual(3 + 15, len(spark40_jars))
 		self.assertEqual(3 + 15, len(spark41_jars))
-		self.assertNotEqual(set(spark34_jars[0:3]), set(spark41_jars[0:3]))
-		self.assertEqual(set(spark34_jars[3:]), set(spark41_jars[3:]))
+		self.assertEqual(3 + 15, len(spark42_jars))
+		self.assertNotEqual(set(spark34_jars[0:3]), set(spark42_jars[0:3]))
+		self.assertEqual(set(spark34_jars[3:]), set(spark42_jars[3:]))
 
 	def testJarsPackages(self):
 		spark34_jars_packages = spark_jars_packages("3.4.").split(",")
 		spark35_jars_packages = spark_jars_packages("3.5.").split(",")
 		spark40_jars_packages = spark_jars_packages("4.0.").split(",")
 		spark41_jars_packages = spark_jars_packages("4.1.").split(",")
+		spark42_jars_packages = spark_jars_packages("4.2.").split(",")
 
 		self.assertEqual(3, len(spark34_jars_packages))
 		self.assertEqual(3, len(spark35_jars_packages))
 		self.assertEqual(3, len(spark40_jars_packages))
 		self.assertEqual(3, len(spark41_jars_packages))
+		self.assertEqual(3, len(spark42_jars_packages))
 
 class PySparkTest(PySpark2PMMLTest):
 
